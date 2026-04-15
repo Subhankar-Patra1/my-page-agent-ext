@@ -1,0 +1,68 @@
+.popup-container {
+  padding: 16px;
+  width: 400px;
+  font-family: system-ui;
+}
+.popup-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.popup-input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.popup-input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.popup-btn {
+  padding: 8px 16px;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.popup-btn-run {
+  background: #3b82f6;
+}
+.popup-btn-run:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+.popup-btn-stop {
+  background: #ef4444;
+}
+.popup-status {
+  margin-bottom: 12px;
+}
+.popup-activity {
+  background: #f8fafc;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+.popup-history {
+  height: 300px;
+  overflow-y: auto;
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+}
+.popup-history-title {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.popup-history-item {
+  margin-bottom: 8px;
+  padding: 8px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.popup-history-msg {
+  color: #64748b;
+}
