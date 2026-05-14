@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════
    OBSIDIAN EMBER — Design System
-   My Page Agent Landing Page
+   Oryonix AI Landing Page
    ═══════════════════════════════════════════════════════ */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
@@ -20,10 +20,10 @@
   --color-success: #22c55e;
   --gradient-hero: linear-gradient(135deg, #f97316 0%, #fb923c 50%, #fdba74 100%);
   --gradient-cta: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  --glass-bg: linear-gradient(145deg, rgba(249, 115, 22, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  --glass-bg-hover: linear-gradient(145deg, rgba(249, 115, 22, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%);
-  --glass-border: 1px solid rgba(249, 115, 22, 0.08);
-  --glass-border-hover: 1px solid rgba(249, 115, 22, 0.25);
+  --glass-bg: linear-gradient(145deg, rgba(249, 115, 22, 0.06) 0%, rgba(249, 115, 22, 0.015) 100%);
+  --glass-bg-hover: linear-gradient(145deg, rgba(249, 115, 22, 0.10) 0%, rgba(249, 115, 22, 0.03) 100%);
+  --glass-border: 1px solid rgba(249, 115, 22, 0.14);
+  --glass-border-hover: 1px solid rgba(249, 115, 22, 0.35);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
   --glass-shadow-hover: 0 12px 48px rgba(249, 115, 22, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.1);
   --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;

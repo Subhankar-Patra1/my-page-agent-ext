@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Lenis from "lenis";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu, X, Download, ArrowRight, Play, Check,
@@ -9,7 +10,7 @@ import {
 import "./App.css";
 
 /* ─── Data ─── */
-const SITE = { name: "My Page Agent", chrome: "#", github: "https://github.com/user/my-page-agent-ext" };
+const SITE = { name: "Oryonix AI", chrome: "#", github: "https://github.com/user/oryonix-ai" };
 const NAV = [
   { label: "Features", href: "#features" },
   { label: "Demo", href: "#demo" },
@@ -68,7 +69,7 @@ function Navbar() {
   return (
     <header className={`nav ${scrolled ? "nav--scrolled" : ""}`}>
       <nav className="container nav__inner">
-        <a href="/" className="nav__logo"><span className="nav__logo-icon">⚡</span><span className="accent-text">My Page Agent</span></a>
+        <a href="/" className="nav__logo"><span className="nav__logo-icon">⚡</span><span className="accent-text">Oryonix AI</span></a>
         <ul className="nav__links">
           {NAV.map(n => <li key={n.href}><a href={n.href} className="nav__link">{n.label}</a></li>)}
         </ul>
@@ -112,11 +113,11 @@ function Hero() {
           <div className="mockup__frame">
             <div className="mockup__bar">
               <div className="mockup__dots"><span className="dot dot--r" /><span className="dot dot--y" /><span className="dot dot--g" /></div>
-              <div className="mockup__url">mypageagent.dev</div>
+              <div className="mockup__url">oryonix.ai</div>
             </div>
             <div className="mockup__body">
               <div className="mockup__panel">
-                <div className="mockup__panel-head"><span className="mockup__panel-icon"><ZapIcon size={16} strokeWidth={2} fill="currentColor" /></span>My Page Agent</div>
+                <div className="mockup__panel-head"><span className="mockup__panel-icon"><ZapIcon size={16} strokeWidth={2} fill="currentColor" /></span>Oryonix AI</div>
                 <div className="mockup__input"><span>Book a flight to NYC for next Friday...</span><span className="mockup__cursor" /></div>
                 <div className="mockup__status"><span className="mockup__status-dot" />Agent is working...</div>
                 <div className="mockup__steps">
@@ -258,7 +259,7 @@ function Testimonials() {
       <div className="container">
         <div className="section__head">
           <h2>Loved by <span className="accent-text">developers</span></h2>
-          <p>See what people are saying about My Page Agent.</p>
+          <p>See what people are saying about Oryonix AI.</p>
         </div>
         <motion.div className="test-grid" variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}>
           {TESTIMONIALS.map(t => (
@@ -301,7 +302,7 @@ function Footer() {
     <footer className="footer">
       <div className="container footer__inner">
         <div className="footer__brand">
-          <a href="/" className="nav__logo"><span className="nav__logo-icon">⚡</span><span className="accent-text">My Page Agent</span></a>
+          <a href="/" className="nav__logo"><span className="nav__logo-icon">⚡</span><span className="accent-text">Oryonix AI</span></a>
           <p className="footer__desc">AI-powered browser automation.<br />Open source & privacy-first.</p>
         </div>
         <div className="footer__cols">
@@ -313,7 +314,7 @@ function Footer() {
           ))}
         </div>
       </div>
-      <div className="footer__bottom"><div className="container"><p>© {new Date().getFullYear()} My Page Agent. Open Source under MIT License.</p></div></div>
+      <div className="footer__bottom"><div className="container"><p>© {new Date().getFullYear()} Oryonix AI. Open Source under MIT License.</p></div></div>
     </footer>
   );
 }
@@ -336,6 +337,29 @@ function AmbientBackground() {
    APP
    ═══════════════════════════════════════════ */
 export default function App() {
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
   return (
     <>
       <AmbientBackground />
