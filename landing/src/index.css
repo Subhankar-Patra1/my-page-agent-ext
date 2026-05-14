@@ -20,12 +20,12 @@
   --color-success: #22c55e;
   --gradient-hero: linear-gradient(135deg, #f97316 0%, #fb923c 50%, #fdba74 100%);
   --gradient-cta: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  --glass-bg: linear-gradient(145deg, rgba(249, 115, 22, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-  --glass-bg-hover: linear-gradient(145deg, rgba(249, 115, 22, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
-  --glass-border: 1px solid rgba(249, 115, 22, 0.2);
-  --glass-border-hover: 1px solid rgba(249, 115, 22, 0.6);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-  --glass-shadow-hover: 0 12px 48px rgba(249, 115, 22, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  --glass-bg: linear-gradient(145deg, rgba(249, 115, 22, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  --glass-bg-hover: linear-gradient(145deg, rgba(249, 115, 22, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%);
+  --glass-border: 1px solid rgba(249, 115, 22, 0.08);
+  --glass-border-hover: 1px solid rgba(249, 115, 22, 0.25);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  --glass-shadow-hover: 0 12px 48px rgba(249, 115, 22, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.1);
   --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-size-hero: clamp(3rem, 6vw, 5.5rem);
   --font-size-h2: clamp(2rem, 4vw, 3.5rem);
@@ -72,7 +72,10 @@ img { max-width: 100%; display: block; }
   0%, 100% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.15); }
   50% { box-shadow: 0 0 40px rgba(249, 115, 22, 0.3); }
 }
-@keyframes blink { 50% { opacity: 0; } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+.text-success { color: var(--color-success); }
+.text-accent { color: var(--color-accent-primary); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

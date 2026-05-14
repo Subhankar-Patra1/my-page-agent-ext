@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu, X, Download, ArrowRight, Play, Check,
-  Globe, Bot, Shield, Zap, Wrench, BarChart3, Star
+  AppWindow, Sparkles, Lock, Rocket, Cpu, Eye, Star,
+  Package, Plug, Terminal, CheckCircle, RefreshCw, Zap as ZapIcon,
+  CheckSquare, BarChart2, Lightbulb
 } from "lucide-react";
 import "./App.css";
 
@@ -15,18 +17,18 @@ const NAV = [
   { label: "Open Source", href: "#open-source" },
 ];
 const FEATURES = [
-  { Icon: Globe, title: "Multi-Tab Control", desc: "Navigate, open, close, and switch between multiple tabs simultaneously." },
-  { Icon: Bot, title: "Natural Language", desc: "Just describe your task in plain English — no coding, no scripts required." },
-  { Icon: Shield, title: "Privacy First", desc: "Runs entirely on your machine with Ollama. Your data never leaves your computer." },
-  { Icon: Zap, title: "60-Second Setup", desc: "Install the extension, run Ollama, and you're automating in under a minute." },
-  { Icon: Wrench, title: "Any LLM, Your Choice", desc: "Bring your own model — Ollama, OpenAI, Anthropic, Groq, or any compatible API." },
-  { Icon: BarChart3, title: "Smart Page Reading", desc: "Understands page structure, forms, buttons — the agent sees what you see." },
+  { Icon: AppWindow, title: "Multi-Tab Control", desc: "Navigate, open, close, and switch between multiple tabs simultaneously." },
+  { Icon: Sparkles, title: "Natural Language", desc: "Just describe your task in plain English — no coding, no scripts required." },
+  { Icon: Lock, title: "Privacy First", desc: "Runs entirely on your machine with Ollama. Your data never leaves your computer." },
+  { Icon: Rocket, title: "60-Second Setup", desc: "Install the extension, run Ollama, and you're automating in under a minute." },
+  { Icon: Cpu, title: "Any LLM, Your Choice", desc: "Bring your own model — Ollama, OpenAI, Anthropic, Groq, or any compatible API." },
+  { Icon: Eye, title: "Smart Page Reading", desc: "Understands page structure, forms, buttons — the agent sees what you see." },
 ];
 const STEPS = [
-  { n: 1, icon: "📦", title: "Install", desc: "Add from Chrome Web Store. One click, zero config." },
-  { n: 2, icon: "🔌", title: "Connect", desc: "Run Ollama locally — your AI, your machine, your rules." },
-  { n: 3, icon: "💬", title: "Command", desc: "Type what you want in the side panel. Plain English." },
-  { n: 4, icon: "✅", title: "Done", desc: "Watch the agent work autonomously. Review the results." },
+  { n: 1, Icon: Package, title: "Install", desc: "Add from Chrome Web Store. One click, zero config." },
+  { n: 2, Icon: Plug, title: "Connect", desc: "Run Ollama locally — your AI, your machine, your rules." },
+  { n: 3, Icon: Terminal, title: "Command", desc: "Type what you want in the side panel. Plain English." },
+  { n: 4, Icon: CheckCircle, title: "Done", desc: "Watch the agent work autonomously. Review the results." },
 ];
 const TESTIMONIALS = [
   { q: "This replaced three separate browser automation tools for me. The natural language interface is a game-changer.", name: "Alex Chen", role: "Full-Stack Developer", av: "AC" },
@@ -114,13 +116,13 @@ function Hero() {
             </div>
             <div className="mockup__body">
               <div className="mockup__panel">
-                <div className="mockup__panel-head"><span className="mockup__panel-icon">⚡</span>My Page Agent</div>
+                <div className="mockup__panel-head"><span className="mockup__panel-icon"><ZapIcon size={16} strokeWidth={2} fill="currentColor" /></span>My Page Agent</div>
                 <div className="mockup__input"><span>Book a flight to NYC for next Friday...</span><span className="mockup__cursor" /></div>
                 <div className="mockup__status"><span className="mockup__status-dot" />Agent is working...</div>
                 <div className="mockup__steps">
-                  <div className="mockup__step mockup__step--done">✅ Opened Google Flights</div>
-                  <div className="mockup__step mockup__step--done">✅ Entered destination: NYC</div>
-                  <div className="mockup__step mockup__step--active">🔄 Selecting date...</div>
+                  <div className="mockup__step mockup__step--done"><Check size={16} strokeWidth={2} style={{display:'inline', marginRight:'6px'}} /> Opened Google Flights</div>
+                  <div className="mockup__step mockup__step--done"><Check size={16} strokeWidth={2} style={{display:'inline', marginRight:'6px'}} /> Entered destination: NYC</div>
+                  <div className="mockup__step mockup__step--active"><RefreshCw size={16} strokeWidth={2} className="animate-spin" style={{display:'inline', marginRight:'6px'}} /> Selecting date...</div>
                 </div>
               </div>
               <div className="mockup__page">
@@ -154,7 +156,7 @@ function Features() {
         <motion.div className="features__grid" variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}>
           {FEATURES.map(f => (
             <motion.div key={f.title} className="card" variants={fadeUp} transition={{ duration: 0.5, ease: [0.16,1,0.3,1] }}>
-              <div className="card__icon"><f.Icon size={26} /></div>
+              <div className="card__icon"><f.Icon size={24} strokeWidth={1.5} /></div>
               <h3 className="card__title">{f.title}</h3>
               <p className="card__desc">{f.desc}</p>
             </motion.div>
@@ -179,10 +181,10 @@ function Demo() {
             <div className="demo__overlay"><button className="demo__play" aria-label="Play demo"><Play size={32} fill="currentColor" /></button><p className="demo__play-text">Watch 60s Demo</p></div>
             <div className="demo__terminal">
               <div className="term__line"><span className="term__prompt">$</span> Tell the agent: "Compare prices for AirPods on Amazon and Best Buy"</div>
-              <div className="term__line term__out">✅ Opened Amazon.com — searching for AirPods Pro...</div>
-              <div className="term__line term__out">✅ Opened BestBuy.com — searching for AirPods Pro...</div>
-              <div className="term__line term__out">📊 Amazon: $199.99 | Best Buy: $189.99</div>
-              <div className="term__line term__result">💡 Best Buy is $10 cheaper. Task complete.</div>
+              <div className="term__line term__out"><CheckSquare size={16} strokeWidth={2} className="text-success" style={{display:'inline', marginRight:'8px', verticalAlign:'text-bottom'}} /> Opened Amazon.com — searching for AirPods Pro...</div>
+              <div className="term__line term__out"><CheckSquare size={16} strokeWidth={2} className="text-success" style={{display:'inline', marginRight:'8px', verticalAlign:'text-bottom'}} /> Opened BestBuy.com — searching for AirPods Pro...</div>
+              <div className="term__line term__out"><BarChart2 size={16} strokeWidth={2} className="text-accent" style={{display:'inline', marginRight:'8px', verticalAlign:'text-bottom'}} /> Amazon: $199.99 | Best Buy: $189.99</div>
+              <div className="term__line term__result"><Lightbulb size={16} strokeWidth={2} className="text-accent" style={{display:'inline', marginRight:'8px', verticalAlign:'text-bottom'}} /> Best Buy is $10 cheaper. Task complete.</div>
             </div>
           </div>
           <div className="demo__tags">
@@ -207,7 +209,7 @@ function HowItWorks() {
           {STEPS.map((s, i) => (
             <motion.div key={s.n} className="step-card" variants={fadeUp} transition={{ duration: 0.5, ease: [0.16,1,0.3,1] }}>
               <div className="step-card__num">{s.n}</div>
-              <span className="step-card__icon">{s.icon}</span>
+              <span className="step-card__icon"><s.Icon size={28} strokeWidth={1.5} /></span>
               <h3 className="step-card__title">{s.title}</h3>
               <p className="step-card__desc">{s.desc}</p>
               {i < STEPS.length - 1 && <div className="step-card__connector" />}
