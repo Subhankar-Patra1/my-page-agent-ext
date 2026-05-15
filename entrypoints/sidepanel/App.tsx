@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAgent } from '../../agent/useAgent';
 import { AgentStatusGlow } from './components/AgentStatusGlow';
+import ReactMarkdown from 'react-markdown';
 import './App.css';
 
 export default function App() {
@@ -10,10 +11,12 @@ export default function App() {
 
   const handleRun = async () => {
     if (!task) return;
+    const taskToRun = task;
+    setTask(''); // Clear input
     setFinalSummary(null);
     try {
-      const result: any = await execute(task);
-      const outputText = result?.message || result?.output || result?.answer;
+      const result: any = await execute(taskToRun);
+      const outputText = result?.message || result?.output || result?.answer || result?.content;
       if (outputText) {
         setFinalSummary(outputText);
       }
@@ -24,18 +27,27 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (status === 'idle' && history.length > 0 && !finalSummary) {
-      // Find the last event that has a message (likely the AI's final answer)
-      const lastMessageEvent = [...history].reverse().find(e => (e as any).message && e.type !== 'error');
+    if (status === 'idle' && currentTask && !finalSummary) {
+      if (history.length === 0) {
+        setFinalSummary("Task completed, but no execution history was recorded. The agent might have encountered a silent error.");
+        return;
+      }
+
+      // Try to find the AI's final text payload regardless of property name
+      const lastMessageEvent = [...history].reverse().find(e => 
+        e.type !== 'error' && ((e as any).message || (e as any).output || (e as any).content || (e as any).text || (e as any).answer)
+      );
+
       if (lastMessageEvent) {
-        setFinalSummary((lastMessageEvent as any).message);
+        const payload = (lastMessageEvent as any);
+        setFinalSummary(payload.message || payload.output || payload.content || payload.text || payload.answer || "Success");
       } else if (history[history.length - 1].type === 'error') {
         setFinalSummary(`Error: ${(history[history.length - 1] as any).error?.message || 'Execution failed'}`);
       } else {
-        setFinalSummary("Task completed, but no summary was provided by the AI.");
+        setFinalSummary("Task completed successfully, but the AI did not format a text summary.");
       }
     }
-  }, [status, history, finalSummary]);
+  }, [status, history, finalSummary, currentTask]);
 
   const mapStatus = () => {
     if (status === 'running') {
@@ -114,7 +126,7 @@ export default function App() {
               <img src="/Oryonix AI 2.png" alt="AI" />
             </div>
             <div className="ai-bubble-content">
-              {finalSummary}
+              <ReactMarkdown className="markdown-body">{finalSummary}</ReactMarkdown>
             </div>
           </div>
         )}
