@@ -27,3 +27,16 @@
 #page-agent-runtime_simulator-mask [class*="_cursorRipple_"]::after {
 	border-color: #f97316 !important;
 }
+
+/* 3. Global Agent Active Glow (Orange & Black Theme) */
+:root {
+  /* Override Page Agent UI variables globally */
+  --color-1: #f97316 !important; /* Ember Primary (Orange) */
+  --color-2: #0a0604 !important; /* Ember Background (Black) */
+}
+
+/* Fallback for hardcoded rgb gradients in SimulatorMask */
+#page-agent-runtime_simulator-mask [class*="_cursorBorder_"],
+#page-agent-runtime_simulator-mask [style*="rgb(57, 182, 255)"] {
+  background: linear-gradient(45deg, #f97316, #0a0604) !important;
+}

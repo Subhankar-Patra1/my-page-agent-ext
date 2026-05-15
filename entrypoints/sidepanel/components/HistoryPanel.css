@@ -148,19 +148,34 @@
 }
 
 .history-clear-btn {
-  background: rgba(255, 0, 0, 0.1);
-  color: #ff6b6b;
-  border: 1px solid rgba(255, 0, 0, 0.2);
+  background: transparent;
+  color: var(--ember-primary, #f97316);
+  border: 1px solid rgba(249, 115, 22, 0.3);
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.85rem;
   transition: all 0.2s ease;
+  outline: none;
 }
 
-.history-clear-btn:hover {
-  background: rgba(255, 0, 0, 0.2);
+.history-clear-btn:hover,
+.history-clear-btn:focus {
+  background: rgba(249, 115, 22, 0.15);
   color: #fff;
+  border-color: var(--ember-primary, #f97316);
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+}
+
+.history-running-banner {
+  background: rgba(249, 115, 22, 0.1);
+  border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 @keyframes fadeIn {

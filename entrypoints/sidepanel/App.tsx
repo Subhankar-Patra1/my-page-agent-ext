@@ -160,6 +160,7 @@ export default function App() {
             setTask(historicalTask);
             setShowHistory(false);
           }}
+          status={status}
         />
       )}
 

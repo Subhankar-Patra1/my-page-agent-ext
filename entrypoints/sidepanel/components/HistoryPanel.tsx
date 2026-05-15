@@ -13,9 +13,10 @@ export interface SearchHistoryItem {
 interface HistoryPanelProps {
   onClose: () => void;
   onRestore: (task: string) => void;
+  status: string;
 }
 
-export function HistoryPanel({ onClose, onRestore }: HistoryPanelProps) {
+export function HistoryPanel({ onClose, onRestore, status }: HistoryPanelProps) {
   const [history, setHistory] = useState<SearchHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -52,9 +53,19 @@ export function HistoryPanel({ onClose, onRestore }: HistoryPanelProps) {
     return stripped;
   };
 
+  const getSnippet = (text: string) => {
+    // Basic markdown strip
+    let stripped = text.replace(/[*_#`~>]/g, '').replace(/\[(.*?)\]\(.*?\)/g, '$1');
+    // Remove extra newlines and spaces
+    stripped = stripped.replace(/\s+/g, ' ').trim();
+    return stripped;
+  };
+
   if (loading) {
     return <div className="history-panel-container"><div className="status-spinner"></div></div>;
   }
+
+  const isRunning = status === 'running' || status === 'thinking';
 
   return (
     <div className="history-panel-container">
@@ -62,6 +73,13 @@ export function HistoryPanel({ onClose, onRestore }: HistoryPanelProps) {
         <h3 className="history-title">Search History</h3>
         <button className="history-close-btn" onClick={onClose}>✕</button>
       </div>
+      
+      {isRunning && (
+        <div className="history-running-banner">
+          <div className="status-glow thinking" style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#f97316', boxShadow: '0 0 8px #f97316', animation: 'pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}></div>
+          <span>Agent is currently working in the background...</span>
+        </div>
+      )}
 
       {history.length === 0 ? (
         <div className="history-empty">
@@ -78,6 +96,8 @@ export function HistoryPanel({ onClose, onRestore }: HistoryPanelProps) {
                   className="history-run-again-btn" 
                   onClick={() => onRestore(item.task)}
                   title="Run this search again"
+                  disabled={isRunning}
+                  style={{ opacity: isRunning ? 0.5 : 1, cursor: isRunning ? 'not-allowed' : 'pointer' }}
                 >
                   ↻ Run Again
                 </button>
