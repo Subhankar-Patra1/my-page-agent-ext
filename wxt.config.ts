@@ -15,7 +15,7 @@ export default defineConfig({
     },
   }),
   manifest: {
-    permissions: ['tabs', 'storage', 'activeTab', 'scripting', 'sidePanel', 'tabGroups'],
+    permissions: ['tabs', 'storage', 'activeTab', 'scripting', 'sidePanel', 'tabGroups', 'alarms'],
     host_permissions: ['<all_urls>'],
     side_panel: {
       default_path: 'sidepanel/index.html'

@@ -1,6 +1,3 @@
-/**
- * React hook for using AgentController
- */
 import type {
 	AgentActivity,
 	AgentStatus,
@@ -10,14 +7,11 @@ import type {
 } from '@page-agent/core'
 import type { LLMConfig } from '@page-agent/llms'
 import { useCallback, useEffect, useRef, useState } from 'react'
-
-import { MultiPageAgent } from './MultiPageAgent'
 import { DEMO_CONFIG, migrateLegacyEndpoint } from './constants'
+import { createSanitizingFetch } from './sanitizingFetch'
+import { MultiPageAgent } from './MultiPageAgent'
 
-/** Language preference: undefined means follow system */
-export type LanguagePreference = SupportedLanguage | undefined
-
-export interface AdvancedConfig {
+interface AdvancedConfig {
 	maxSteps?: number
 	systemInstruction?: string
 	experimentalLlmsTxt?: boolean
@@ -25,9 +19,10 @@ export interface AdvancedConfig {
 	disableNamedToolChoice?: boolean
 }
 
-export interface ExtConfig extends LLMConfig, AdvancedConfig {
-	language?: LanguagePreference
-}
+type ExtConfig = LLMConfig &
+	AdvancedConfig & {
+		language?: SupportedLanguage
+	}
 
 export interface UseAgentResult {
 	status: AgentStatus
@@ -49,18 +44,34 @@ export function useAgent(): UseAgentResult {
 	const [config, setConfig] = useState<ExtConfig | null>(null)
 
 	useEffect(() => {
-		chrome.storage.local.get(['llmConfig', 'language', 'advancedConfig']).then((result) => {
-			let llmConfig = (result.llmConfig as LLMConfig) ?? DEMO_CONFIG
+		chrome.storage.local.get(['language', 'advancedConfig']).then((result) => {
+			// Always use env-based config (DEMO_CONFIG) as the source of truth
+			let llmConfig: LLMConfig = { ...DEMO_CONFIG }
 			const language = (result.language as SupportedLanguage) || undefined
 			const advancedConfig = (result.advancedConfig as AdvancedConfig) ?? {}
 
-			// Auto-migrate legacy testing endpoints
-			const migrated = migrateLegacyEndpoint(llmConfig)
-			if (migrated !== llmConfig) {
-				llmConfig = migrated
-				chrome.storage.local.set({ llmConfig: migrated })
-			} else if (!result.llmConfig) {
-				chrome.storage.local.set({ llmConfig: DEMO_CONFIG })
+			// Persist current config to storage
+			chrome.storage.local.set({ llmConfig })
+
+			// For local models (Ollama), apply sanitizing fetch and disable named tool choice
+			const isLocalModel = llmConfig.baseURL.includes('localhost') || llmConfig.baseURL.includes('127.0.0.1')
+			if (isLocalModel) {
+				llmConfig = { ...llmConfig, disableNamedToolChoice: true, customFetch: createSanitizingFetch() }
+			} else {
+				// For cloud testing proxies: clear apiKey so no Authorization header is sent
+				// and use a customFetch that strips any lingering auth headers
+				const proxyFetch: typeof fetch = async (input, init) => {
+					if (init?.headers) {
+						const h = init.headers as Record<string, string>
+						const cleaned: Record<string, string> = {}
+						for (const [k, v] of Object.entries(h)) {
+							if (k.toLowerCase() !== 'authorization') cleaned[k] = v
+						}
+						return fetch(input, { ...init, headers: cleaned })
+					}
+					return fetch(input, init)
+				}
+				llmConfig = { ...llmConfig, apiKey: '', customFetch: proxyFetch }
 			}
 
 			setConfig({ ...llmConfig, ...advancedConfig, language })

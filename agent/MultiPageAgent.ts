@@ -57,7 +57,7 @@ export class MultiPageAgent extends PageAgentCore {
 			onBeforeTask: async (agent) => {
 				await tabsController.init(agent.task, { includeInitialTab, experimentalIncludeAllTabs })
 
-				heartBeatInterval = window.setInterval(() => {
+				heartBeatInterval = setInterval(() => {
 					chrome.storage.local.set({
 						agentHeartbeat: Date.now(),
 					})
@@ -70,7 +70,7 @@ export class MultiPageAgent extends PageAgentCore {
 
 			onAfterTask: async () => {
 				if (heartBeatInterval) {
-					window.clearInterval(heartBeatInterval)
+					clearInterval(heartBeatInterval)
 					heartBeatInterval = null
 				}
 
@@ -87,7 +87,7 @@ export class MultiPageAgent extends PageAgentCore {
 
 			onDispose: () => {
 				if (heartBeatInterval) {
-					window.clearInterval(heartBeatInterval)
+					clearInterval(heartBeatInterval)
 					heartBeatInterval = null
 				}
 
