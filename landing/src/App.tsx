@@ -178,8 +178,7 @@ function Hero() {
 }
 
 /* ═══════════ FEATURES ═══════════ */
-/* ═══════════ FEATURES ═══════════ */
-const FeatureCard = ({ f, i }: { f: any, i: number }) => {
+const FeatureCard = ({ f, i, progress, range, targetScale, total }: { f: any, i: number, progress: any, range: number[], targetScale: number, total: number }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -189,61 +188,89 @@ const FeatureCard = ({ f, i }: { f: any, i: number }) => {
     mouseY.set(clientY - top);
   }
 
+  // Smoothly scale down as user scrolls past this specific card
+  const scale = useTransform(progress, range, [1, targetScale]);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.6, delay: (i % 3) * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      onMouseMove={handleMouseMove}
-      className="card group relative overflow-hidden"
+    <div
+      className="stack-card-container"
+      style={{
+        position: "sticky",
+        top: `calc(100px + ${i * 32}px)`,
+        zIndex: i + 1,
+        // The magic padding that creates scroll space for the sticky effect to be visible
+        marginBottom: i === total - 1 ? "0" : "40vh"
+      }}
     >
       <motion.div
-        className="pointer-events-none absolute -inset-px rounded-[24px] opacity-0 transition duration-300 group-hover:opacity-100"
+        onMouseMove={handleMouseMove}
+        className="card group relative overflow-hidden stack-card-sticky"
         style={{
-          background: useMotionTemplate`
-            radial-gradient(
-              650px circle at ${mouseX}px ${mouseY}px,
-              rgba(249, 115, 22, 0.1),
-              transparent 80%
-            )
-          `,
+          scale,
+          transformOrigin: "top center",
         }}
-      />
-      <div className="card__icon">
-        <f.Icon size={24} strokeWidth={1.5} />
-      </div>
-      <h3 className="card__title">{f.title}</h3>
-      <p className="card__desc">{f.desc}</p>
-    </motion.div>
+      >
+        <motion.div
+          className="pointer-events-none absolute -inset-px rounded-[24px] opacity-0 transition duration-300 group-hover:opacity-100"
+          style={{
+            background: useMotionTemplate`
+              radial-gradient(
+                650px circle at ${mouseX}px ${mouseY}px,
+                rgba(249, 115, 22, 0.1),
+                transparent 80%
+              )
+            `,
+          }}
+        />
+        <div className="stack-card-inner">
+          <div className="card__icon" style={{ width: '64px', height: '64px' }}>
+            <f.Icon size={32} strokeWidth={1.5} />
+          </div>
+          <div className="stack-card-text">
+            <h3 className="card__title" style={{ fontSize: '2rem', marginBottom: '16px' }}>{f.title}</h3>
+            <p className="card__desc" style={{ fontSize: '1.1rem', maxWidth: '600px' }}>{f.desc}</p>
+          </div>
+        </div>
+      </motion.div>
+    </div>
   );
 };
 
 function Features() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Track scroll progress purely within the Features section
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
   return (
-    <section className="section section-alt" id="features">
+    <section className="section" id="features" ref={containerRef}>
       <div className="container">
-        <div className="section__head">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            Everything you need to <span className="accent-text">automate the web</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
-            No coding. No cloud. Just natural language.
-          </motion.p>
+        <div className="section__head" style={{ marginBottom: '80px' }}>
+          <h2>Everything you need to <span className="accent-text">automate the web</span></h2>
+          <p>No coding. No cloud. Just natural language.</p>
         </div>
-        <div className="features__grid">
-          {FEATURES.map((f, i) => (
-            <FeatureCard key={f.title} f={f} i={i} />
-          ))}
+        <div className="features-stack-wrapper">
+          {FEATURES.map((f, i) => {
+            // Calculate dynamic targets so earlier cards scale down more as others pile up
+            const targetScale = 1 - ((FEATURES.length - 1 - i) * 0.05);
+            // Calculate specific scroll segment [0 to 1] where this card should scale
+            const range = [i * (1 / FEATURES.length), 1];
+
+            return (
+              <FeatureCard
+                key={f.title}
+                f={f}
+                i={i}
+                progress={scrollYProgress}
+                range={range}
+                targetScale={targetScale}
+                total={FEATURES.length}
+              />
+            );
+          })}
         </div>
       </div>
     </section>
