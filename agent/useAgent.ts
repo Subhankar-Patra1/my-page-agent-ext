@@ -87,7 +87,8 @@ export function useAgent(): UseAgentResult {
 CRITICAL RULES:
 1. TAB MANAGEMENT: ALWAYS try to achieve the user's goal by interacting with the CURRENT TAB first. If you are on a search engine or a page with a search bar, USE THAT SEARCH BAR via \`input_text\` instead of opening a new tab. ONLY use \`open_new_tab\` if you are on a completely blank/irrelevant page and must navigate.
 2. COMPLETION: When you complete the task, you MUST return a well-formatted, short summary of your findings and actions to the user using Markdown. Never stop without explaining what you achieved.
-3. SCROLLING: When using the \`scroll\` tool, the \`num_pages\` parameter MUST be a number between 0.1 and 10. NEVER set \`num_pages\` greater than 10, or it will throw an error.`
+3. SCROLLING: When using the \`scroll\` tool, the \`num_pages\` parameter MUST be a number between 0.1 and 10. NEVER set \`num_pages\` greater than 10, or it will throw an error.
+4. THINKING: When providing your \`memory\` or \`next_goal\` reflection during execution, write in simple, user-friendly sentences and limit your text to 30 words maximum. The user reads this to know what you are doing.`
 		const finalInstruction = systemInstruction ? `${systemInstruction}\n\n${defaultInstruction}` : defaultInstruction
 
 		const agent = new MultiPageAgent({

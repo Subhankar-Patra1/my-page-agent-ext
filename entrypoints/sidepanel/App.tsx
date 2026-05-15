@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAgent } from '../../agent/useAgent';
 import { AgentStatusGlow } from './components/AgentStatusGlow';
 import ReactMarkdown from 'react-markdown';
@@ -26,25 +26,42 @@ export default function App() {
     }
   };
 
+  const prevStatusRef = useRef(status);
+
   useEffect(() => {
-    if (status === 'idle' && currentTask && !finalSummary) {
+    const prevStatus = prevStatusRef.current;
+    prevStatusRef.current = status;
+
+    if (prevStatus === 'running' && (status === 'completed' || status === 'error') && currentTask && !finalSummary) {
       if (history.length === 0) {
-        setFinalSummary("Task completed, but no execution history was recorded. The agent might have encountered a silent error.");
+        setFinalSummary("Task stopped or failed before execution started.");
         return;
       }
 
-      // Try to find the AI's final text payload regardless of property name
+      // Handle done tool action explicitly or find text payload
       const lastMessageEvent = [...history].reverse().find(e => 
-        e.type !== 'error' && ((e as any).message || (e as any).output || (e as any).content || (e as any).text || (e as any).answer)
-      );
+        e.type !== 'error' && ((e as any).message || (e as any).output || (e as any).content || (e as any).text || (e as any).answer || ((e as any).action?.name === 'done' && (e as any).action?.input?.text))
+      ) as any;
 
-      if (lastMessageEvent) {
-        const payload = (lastMessageEvent as any);
-        setFinalSummary(payload.message || payload.output || payload.content || payload.text || payload.answer || "Success");
-      } else if (history[history.length - 1].type === 'error') {
-        setFinalSummary(`Error: ${(history[history.length - 1] as any).error?.message || 'Execution failed'}`);
+      let foundDoneText = null;
+      if (lastMessageEvent?.action?.name === 'done' && lastMessageEvent?.action?.input?.text) {
+        foundDoneText = lastMessageEvent.action.input.text;
+      }
+
+      if (foundDoneText) {
+        setFinalSummary(foundDoneText);
+      } else if (lastMessageEvent && (lastMessageEvent.message || lastMessageEvent.output || lastMessageEvent.content || lastMessageEvent.text || lastMessageEvent.answer)) {
+        setFinalSummary(lastMessageEvent.message || lastMessageEvent.output || lastMessageEvent.content || lastMessageEvent.text || lastMessageEvent.answer || "Task executed.");
       } else {
-        setFinalSummary("Task completed successfully, but the AI did not format a text summary.");
+        // Fallback to the last reflection memory if it crashed or was stopped
+        const lastStep = [...history].reverse().find(e => e.type === 'step') as any;
+        if (lastStep?.reflection?.memory) {
+          setFinalSummary(`**Task concluded without a formal summary.**\n\n*Last agent memory:*\n${lastStep.reflection.memory}`);
+        } else if (history[history.length - 1].type === 'error') {
+          setFinalSummary(`Error: ${(history[history.length - 1] as any).error?.message || (history[history.length - 1] as any).message || 'Execution failed'}`);
+        } else {
+          setFinalSummary("Task completed, but the AI did not format a text summary.");
+        }
       }
     }
   }, [status, history, finalSummary, currentTask]);
@@ -56,6 +73,26 @@ export default function App() {
     }
     if (status === 'error') return 'error';
     return 'idle';
+  };
+
+  const getThinkingText = () => {
+    const lastStep = [...history].reverse().find(e => e.type === 'step') as any;
+    const memory = lastStep?.reflection?.memory || lastStep?.reflection?.next_goal;
+    
+    if (memory) {
+      const words = memory.split(' ');
+      if (words.length > 30) {
+        return words.slice(0, 30).join(' ') + '...';
+      }
+      return memory;
+    }
+
+    if (activity) {
+      if (activity.type === 'executing') return `Executing ${(activity as any).tool}...`;
+      if (activity.type === 'thinking') return 'Analyzing page context...';
+      return `Oryonix is ${activity.type}...`;
+    }
+    return 'Thinking...';
   };
 
   return (
@@ -115,7 +152,7 @@ export default function App() {
           <div className="chat-status-bar">
             <div className="status-spinner"></div>
             <span className="status-text">
-              {activity ? (activity.type === 'executing' ? `Executing ${(activity as any).tool}...` : `Oryonix is ${activity.type}...`) : 'Thinking...'}
+              {getThinkingText()}
             </span>
           </div>
         )}

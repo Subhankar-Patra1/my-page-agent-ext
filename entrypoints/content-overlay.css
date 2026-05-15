@@ -1,0 +1,21 @@
+/* Obsidian Ember Theme overrides for Page Agent Controller Overlays */
+
+/* 1. Searching Window / Bounding Boxes */
+#playwright-highlight-container > div:not(.playwright-highlight-label) {
+  border-color: #f97316 !important;
+  background-color: rgba(249, 115, 22, 0.1) !important;
+}
+
+#playwright-highlight-container > .playwright-highlight-label {
+  background-color: #ea580c !important;
+  color: #fff !important;
+}
+
+/* 2. Cursor Overlay */
+#page-agent-runtime_simulator-mask [class*="_cursorBorder_"] {
+	background: linear-gradient(45deg, #f97316, #ea580c) !important;
+}
+
+#page-agent-runtime_simulator-mask [class*="_cursorRipple_"]::after {
+	border-color: #f97316 !important;
+}
