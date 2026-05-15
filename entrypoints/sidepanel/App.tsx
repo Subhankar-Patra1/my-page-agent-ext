@@ -1,13 +1,31 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAgent } from '../../agent/useAgent';
 import { AgentStatusGlow } from './components/AgentStatusGlow';
+import { HistoryPanel } from './components/HistoryPanel';
 import ReactMarkdown from 'react-markdown';
+import { storage } from '@wxt-dev/storage';
 import './App.css';
 
 export default function App() {
   const [task, setTask] = useState('');
   const [finalSummary, setFinalSummary] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
   const { status, activity, history, currentTask, execute, stop } = useAgent();
+
+  const saveToHistory = async (taskText: string, summaryText: string) => {
+    try {
+      const savedHistory = await storage.getItem<any[]>('local:oryonix_history') || [];
+      const newItem = {
+        id: Date.now().toString(),
+        task: taskText,
+        summary: summaryText,
+        timestamp: Date.now()
+      };
+      await storage.setItem('local:oryonix_history', [...savedHistory, newItem]);
+    } catch (e) {
+      console.error('Failed to save history', e);
+    }
+  };
 
   const handleRun = async () => {
     if (!task) return;
@@ -19,10 +37,13 @@ export default function App() {
       const outputText = result?.message || result?.output || result?.answer || result?.content;
       if (outputText) {
         setFinalSummary(outputText);
+        saveToHistory(taskToRun, outputText);
       }
     } catch (e: any) {
       console.error(e);
-      setFinalSummary(`Error: ${e?.message || 'Execution failed'}`);
+      const errorMsg = `Error: ${e?.message || 'Execution failed'}`;
+      setFinalSummary(errorMsg);
+      saveToHistory(taskToRun, errorMsg);
     }
   };
 
@@ -50,17 +71,26 @@ export default function App() {
 
       if (foundDoneText) {
         setFinalSummary(foundDoneText);
+        saveToHistory(currentTask, foundDoneText);
       } else if (lastMessageEvent && (lastMessageEvent.message || lastMessageEvent.output || lastMessageEvent.content || lastMessageEvent.text || lastMessageEvent.answer)) {
-        setFinalSummary(lastMessageEvent.message || lastMessageEvent.output || lastMessageEvent.content || lastMessageEvent.text || lastMessageEvent.answer || "Task executed.");
+        const text = lastMessageEvent.message || lastMessageEvent.output || lastMessageEvent.content || lastMessageEvent.text || lastMessageEvent.answer || "Task executed.";
+        setFinalSummary(text);
+        saveToHistory(currentTask, text);
       } else {
         // Fallback to the last reflection memory if it crashed or was stopped
         const lastStep = [...history].reverse().find(e => e.type === 'step') as any;
         if (lastStep?.reflection?.memory) {
-          setFinalSummary(`**Task concluded without a formal summary.**\n\n*Last agent memory:*\n${lastStep.reflection.memory}`);
+          const text = `**Task concluded without a formal summary.**\n\n*Last agent memory:*\n${lastStep.reflection.memory}`;
+          setFinalSummary(text);
+          saveToHistory(currentTask, text);
         } else if (history[history.length - 1].type === 'error') {
-          setFinalSummary(`Error: ${(history[history.length - 1] as any).error?.message || (history[history.length - 1] as any).message || 'Execution failed'}`);
+          const text = `Error: ${(history[history.length - 1] as any).error?.message || (history[history.length - 1] as any).message || 'Execution failed'}`;
+          setFinalSummary(text);
+          saveToHistory(currentTask, text);
         } else {
-          setFinalSummary("Task completed, but the AI did not format a text summary.");
+          const text = "Task completed, but the AI did not format a text summary.";
+          setFinalSummary(text);
+          saveToHistory(currentTask, text);
         }
       }
     }
@@ -102,9 +132,37 @@ export default function App() {
           <img src="/Oryonix AI 2.png" alt="Oryonix AI Logo" className="popup-logo" />
           <h2 className="popup-title">Oryonix AI</h2>
         </div>
-        <AgentStatusGlow status={mapStatus()} />
+        <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+          <button 
+            className="history-toggle-btn"
+            onClick={() => setShowHistory(true)}
+            title="View Search History"
+            style={{
+              background: 'transparent', border: 'none', color: '#f97316', 
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px',
+              fontSize: '0.85rem', fontWeight: 600
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            History
+          </button>
+          <AgentStatusGlow status={mapStatus()} />
+        </div>
       </header>
       
+      {showHistory && (
+        <HistoryPanel 
+          onClose={() => setShowHistory(false)} 
+          onRestore={(historicalTask) => {
+            setTask(historicalTask);
+            setShowHistory(false);
+          }}
+        />
+      )}
+
       <div className="popup-chat-area">
         {!currentTask && !finalSummary && status === 'idle' && (
           <div className="landing-state">
