@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -60,10 +60,18 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const isScrollingRef = useRef(false);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setActiveSection(href.substring(1));
+    isScrollingRef.current = true;
+    
+    if ((window as any).navTimeout) clearTimeout((window as any).navTimeout);
+    (window as any).navTimeout = setTimeout(() => {
+      isScrollingRef.current = false;
+    }, 1600);
+
     const target = document.querySelector(href);
     if (target) {
       if ((window as any).lenis) {
@@ -83,6 +91,8 @@ function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
+      
+      if (isScrollingRef.current) return;
       
       const sections = NAV.map(n => n.href.substring(1));
       let current = "";
