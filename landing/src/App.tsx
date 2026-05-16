@@ -7,7 +7,8 @@ import {
   Menu, X, Download, ArrowRight, Play, Check,
   AppWindow, Sparkles, Lock, Rocket, Cpu, Eye, Star,
   Package, Plug, Terminal, CheckCircle, RefreshCw,
-  CheckSquare, BarChart2, Lightbulb, ChevronUp
+  CheckSquare, BarChart2, Lightbulb, ChevronUp, ChevronDown,
+  Search, MessageSquare, Plus
 } from "lucide-react";
 import "./App.css";
 
@@ -42,7 +43,7 @@ const TESTIMONIALS = [
 const OS_FEATURES = ["Full multi-tab browser agent", "Local LLM support (Ollama)", "Custom LLM endpoint support", "Smart page reading & interaction", "Tab grouping & management", "MIT Licensed — forever free"];
 const FOOTER_COLS = [
   { title: "Product", links: [{ l: "Features", h: "#features" }, { l: "Demo", h: "#demo" }, { l: "How It Works", h: "#how-it-works" }, { l: "Changelog", h: "#" }] },
-  { title: "Resources", links: [{ l: "Documentation", h: "#" }, { l: "Getting Started", h: "#" }, { l: "API Reference", h: "#" }, { l: "FAQ", h: "#" }] },
+  { title: "Resources", links: [{ l: "Documentation", h: "#" }, { l: "Getting Started", h: "#" }, { l: "API Reference", h: "#" }, { l: "FAQ", h: "#faq" }] },
   { title: "Connect", links: [{ l: "GitHub", h: SITE.github }, { l: "X (Twitter)", h: "#" }, { l: "Discord", h: "#" }, { l: "Report a Bug", h: "#" }] },
 ];
 
@@ -404,8 +405,117 @@ function CTA() {
   );
 }
 
+/* ═══════════ FAQ SECTION ═══════════ */
+const FAQS = [
+  { question: "Is Oryonix AI free to use?", answer: <>Yes, the browser extension is completely open-source and free to install. You can check out our <a href={SITE.github} target="_blank" rel="noreferrer" style={{color: 'var(--color-accent-primary)', textDecoration: 'none'}}>GitHub repository</a>.</> },
+  { question: "Do I need my own API key?", answer: <>Oryonix allows you to <strong>Bring Your Own Key (BYOK)</strong> or connect to a local <a href="https://ollama.com/" target="_blank" rel="noreferrer" style={{color: 'var(--color-accent-primary)', textDecoration: 'none'}}>Ollama</a> instance, giving you complete control over your usage and privacy.</> },
+  { question: "What data does the agent collect?", answer: "Oryonix is privacy-first. It runs locally in your browser and only accesses the active tab when you explicitly trigger it." },
+  { question: "Can it bypass CAPTCHAs?", answer: "While highly capable, Oryonix relies on standard web accessibility. Heavy bot protection or complex CAPTCHAs may require human intervention." },
+  { question: "How is this different from standard browser automation?", answer: <>Instead of rigid, easily broken scripts (like <code style={{background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.9em'}}>Puppeteer</code>), Oryonix uses AI to understand natural language. It 'sees' the page like a human and adapts to layout changes automatically.</> }
+];
+
+function FAQ() {
+  const [openIndices, setOpenIndices] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const toggleFAQ = (index: number) => {
+    setOpenIndices(prev => 
+      prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+    );
+  };
+
+  const filteredFAQs = FAQS.map((faq, originalIndex) => ({ ...faq, originalIndex }))
+    .filter(f => f.question.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  return (
+    <section id="faq" className="section container" style={{ paddingBottom: '120px' }}>
+      <div className="section__head">
+        <h2 style={{ textAlign: 'center', marginBottom: '64px' }}>
+          Frequently Asked <span className="accent-text">Questions</span>
+        </h2>
+      </div>
+
+      <div className="faq-search-wrapper">
+        <Search size={20} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-tertiary)' }} />
+        <input 
+          type="text" 
+          placeholder="Search questions..." 
+          className="faq-search-input"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      <div className="faq-card-grid">
+        <AnimatePresence mode="popLayout">
+          {filteredFAQs.map((faq) => {
+            const isOpen = openIndices.includes(faq.originalIndex);
+            return (
+              <motion.div
+                layout
+                key={faq.originalIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className={`faq-modern-card ${isOpen ? 'faq-modern-card--active' : ''}`}
+                onClick={() => toggleFAQ(faq.originalIndex)}
+              >
+                <div className="faq-card-header">
+                  <h3 className="faq-card-question">{faq.question}</h3>
+                  <div className="faq-card-icon">
+                    <Plus size={20} />
+                  </div>
+                </div>
+
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <div className="faq-card-answer">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+      </div>
+
+      {filteredFAQs.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '64px', color: 'var(--color-text-tertiary)' }}>
+          No results found for "{searchQuery}"
+        </div>
+      )}
+
+      <motion.div 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        style={{ maxWidth: '800px', margin: '80px auto 0', padding: '32px 0', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '24px' }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--color-text-secondary)' }}>
+          <MessageSquare size={20} color="var(--color-accent-primary)" />
+          <p style={{ margin: 0, fontSize: '1rem' }}>Still have questions? Can't find the answer you're looking for?</p>
+        </div>
+        <a href={SITE.github} className="btn btn--sm btn--glass" target="_blank" rel="noopener noreferrer">
+          <GithubIcon size={16} style={{marginRight: '8px'}} /> Read Documentation
+        </a>
+      </motion.div>
+    </section>
+  );
+}
+
 /* ═══════════ FOOTER ═══════════ */
-function Footer() {
+function Footer({ onNavClick }: { onNavClick?: (e: any, href: string) => void }) {
   return (
     <footer className="footer">
       <div className="container footer__inner">
@@ -420,7 +530,7 @@ function Footer() {
           {FOOTER_COLS.map(c => (
             <div key={c.title} className="footer__col">
               <h4>{c.title}</h4>
-              <ul>{c.links.map(l => <li key={l.l}><a href={l.h}>{l.l}</a></li>)}</ul>
+              <ul>{c.links.map(l => <li key={l.l}><a href={l.h} onClick={l.h.startsWith('#') && l.h !== '#' && onNavClick ? (e) => onNavClick(e, l.h) : undefined}>{l.l}</a></li>)}</ul>
             </div>
           ))}
         </div>
@@ -569,8 +679,9 @@ export default function App() {
         <OpenSource />
         <Testimonials />
         <CTA />
+        <FAQ />
       </main>
-      <Footer />
+      <Footer onNavClick={handleNavClick} />
 
       {/* Mobile Bottom Dock */}
       <AnimatePresence>
