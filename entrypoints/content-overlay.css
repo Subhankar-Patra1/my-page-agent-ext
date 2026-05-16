@@ -1,158 +1,183 @@
-/* Obsidian Ember Theme overrides for Page Agent Controller Overlays */
+/* Obsidian Ember Theme — Page Agent Controller Overlay Overrides */
 
-/* 1. Searching Window / Bounding Boxes - HIDDEN AS REQUESTED */
+/* ── 1. Hide library highlight containers ────────────────────── */
 #playwright-highlight-container {
   display: none !important;
   opacity: 0 !important;
   visibility: hidden !important;
 }
 
-/* 2. Custom Agentic Cursor (Unique Hand Tool) */
+/* ── 2. Hide default cursor fill / border parts ──────────────── */
 #page-agent-runtime_simulator-mask [class*="_cursorBorder_"],
 #page-agent-runtime_simulator-mask [class*="_cursorFilling_"] {
-    display: none !important;
+  display: none !important;
 }
 
-#page-agent-runtime_simulator-mask div:has(> [class*="_cursorRipple_"]) {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='36' height='36'%3E%3Cpath fill='%23f97316' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round' d='M10 2.5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v7.51h1.03c.8 0 1.57.34 2.11.94l2.95 3.32c.56.63.88 1.45.88 2.3v.53c0 2.21-1.79 4-4 4h-6.42c-1.39 0-2.73-.61-3.66-1.67l-2.88-3.26c-.73-.83-.69-2.11.08-2.9.72-.74 1.91-.77 2.68-.07l1.73 1.57V8.5c0-1.38 1.12-2.5 2.5-2.5h.5v-1.5z'/%3E%3C/svg%3E") !important;
-    background-size: contain !important;
-    background-repeat: no-repeat !important;
-    width: 36px !important;
-    height: 36px !important;
-    margin-left: -18px !important; /* Align finger tip hotspot */
-    margin-top: 0px !important;
-    filter: drop-shadow(0px 4px 6px rgba(249, 115, 22, 0.4));
-}
-
-#page-agent-runtime_simulator-mask [class*="_cursorRipple_"]::after {
-	border-color: #f97316 !important;
-}
-
-/* 3. Global Color Variable Overrides to kill Rainbow Glow */
-/* We target ANY class that might contain the page-agent UI to force our theme */
-:root,
-body,
-[class*="_wrapper_"], 
-[class*="gtdpc"],
-[id*="page-agent"] {
-  --color-1: #f97316 !important; /* Ember Primary (Orange) */
-  --color-2: #0a0604 !important; /* Ember Background (Black) */
-  --color-3: #ea580c !important; /* Ember Hover */
-  --color-4: #f97316 !important; 
-}
-
-/* Force override any hardcoded linear-gradients in the UI injected by libraries */
-[class*="_background_"]::before,
-[class*="_background_"]::after,
-[class*="_cursorBorder_"] {
-    background-image: linear-gradient(to bottom left, #f97316, #ea580c, #f97316) !important;
-}
-
-/* 5. Nuke the @page-agent Motion Canvas Overlay (Source of the Rainbow) */
+/* ── 3. Kill Motion Canvas / rainbow overlay ─────────────────── */
 #page-agent-runtime_simulator-mask canvas,
 #page-agent-runtime_simulator-mask svg,
 #page-agent-runtime_simulator-mask > div:not([class*="_cursor_"]):not([class*="cursor"]) {
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
-@property --glow-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
+/* ── 4. Global color variable overrides ──────────────────────── */
+:root,
+body,
+[class*="_wrapper_"],
+[class*="gtdpc"],
+[id*="page-agent"] {
+  --color-1: #f97316 !important;
+  --color-2: #0a0604 !important;
+  --color-3: #ea580c !important;
+  --color-4: #f97316 !important;
 }
 
-/* 4. Professional Agent Active Glow (Spinning Conic Gradient Border) */
+[class*="_background_"]::before,
+[class*="_background_"]::after,
+[class*="_cursorBorder_"] {
+  background-image: linear-gradient(to bottom left, #f97316, #ea580c, #f97316) !important;
+}
+
+/* ── 5. Mask container: outer ambient aura only ──────────────── */
 #page-agent-runtime_simulator-mask {
-    pointer-events: none !important;
-    z-index: 2147483640 !important;
-    background: transparent !important;
-    /* Soft static inner glow so the border is never completely dark */
-    box-shadow: inset 0 0 0 2px rgba(249, 115, 22, 0.4), inset 0 0 20px rgba(249, 115, 22, 0.2) !important;
+  pointer-events: none !important;
+  z-index: 2147483640 !important;
+  background: transparent !important;
+  animation: maskAura 4s ease-in-out infinite !important;
 }
 
-/* Thick Spinning Gradient Overlay using Clip-Path */
+@keyframes maskAura {
+  0%, 100% {
+    box-shadow:
+      0 0 60px  rgba(249, 115, 22, 0.06),
+      0 0 120px rgba(249, 115, 22, 0.03);
+  }
+  50% {
+    box-shadow:
+      0 0 80px  rgba(249, 115, 22, 0.14),
+      0 0 160px rgba(249, 115, 22, 0.07);
+  }
+}
+
+/* ── 7. Mesh-gradient breathing border (::after) ─────────────── */
+/*
+   A 14-stop Aurora gradient spanning 400% of the element width.
+   background-position shifts in a slow diamond path so the visible
+   slice of the gradient drifts through:
+     deep rust → burnt orange → primary orange → peach → cream → back
+   giving the illusion of a living, breathing colour mesh.
+
+   clip-path carves out the page content area, leaving only a 14px
+   wide frame — inner rectangle is CCW so the nonzero fill rule
+   punches a clean hole through the center.
+
+   Three stacked drop-shadows build the layered ember glow:
+     tight (6px)  → crisp corona
+     mid   (20px) → warm halo
+     wide  (50px) → diffuse ambient
+*/
 #page-agent-runtime_simulator-mask::after {
-    content: "" !important;
-    position: absolute !important;
-    inset: 0 !important;
-    pointer-events: none !important;
-    
-    /* Orange themed conic gradient using custom property for rotation */
-    /* Creates two glowing light beams chasing each other around the perimeter */
-    background: conic-gradient(
-        from var(--glow-angle),
-        transparent 0%, 
-        #ea580c 15%, 
-        #fb923c 25%, 
-        transparent 25%, 
-        transparent 50%,
-        #ea580c 65%, 
-        #fb923c 75%, 
-        transparent 75%
-    ) !important;
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  z-index: 2147483641 !important;
 
-    /* Hollow out the center using clip-path to leave a 14px frame */
-    clip-path: polygon(
-        0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 
-        14px 14px, 14px calc(100% - 14px), calc(100% - 14px) calc(100% - 14px), calc(100% - 14px) 14px, 14px 14px
-    ) !important;
-    
-    /* Intense Aura Glow effect (replicates the blurred pseudo-element from snippet) */
-    filter: drop-shadow(0 0 15px rgba(249, 115, 22, 1)) drop-shadow(0 0 5px rgba(251, 146, 60, 1)) !important;
-    z-index: 2147483641 !important;
-    animation: conicRotate 3.5s linear infinite !important;
+  background-image: linear-gradient(
+    135deg,
+    #431407  0%,
+    #7c2d12  6%,
+    #c2410c 14%,
+    #ea580c 24%,
+    #f97316 36%,
+    #fb923c 46%,
+    #fdba74 52%,
+    #fff7ed 56%,
+    #fdba74 61%,
+    #fb923c 70%,
+    #f97316 80%,
+    #ea580c 90%,
+    #c2410c 96%,
+    #7c2d12 100%
+  ) !important;
+
+  /* 400% width means only ~25% of the gradient is visible at once;
+     animating position drifts the slice through the full spectrum. */
+  background-size: 400% 400% !important;
+
+  /* Inner CCW polygon = nonzero-rule hole → 14px frame */
+  clip-path: polygon(
+    0%   0%,  100% 0%,  100% 100%,  0%   100%,  0%   0%,
+    14px 14px,
+    14px calc(100% - 14px),
+    calc(100% - 14px) calc(100% - 14px),
+    calc(100% - 14px) 14px,
+    14px 14px
+  ) !important;
+
+  filter:
+    drop-shadow(0 0 6px  rgba(249, 115, 22, 0.95))
+    drop-shadow(0 0 20px rgba(249, 115, 22, 0.65))
+    drop-shadow(0 0 50px rgba(249, 115, 22, 0.35)) !important;
+
+  animation: meshBreath 5s ease-in-out infinite !important;
 }
 
-@keyframes conicRotate {
-    0% { --glow-angle: 0deg; }
-    100% { --glow-angle: 360deg; }
+/* Diamond-path position drift + opacity breath in one keyframe block */
+@keyframes meshBreath {
+  0%   { background-position: 0%   0%;   opacity: 0.82; }
+  25%  { background-position: 100% 0%;   opacity: 1;    }
+  50%  { background-position: 100% 100%; opacity: 0.87; }
+  75%  { background-position: 0%   100%; opacity: 1;    }
+  100% { background-position: 0%   0%;   opacity: 0.82; }
 }
 
-/* Custom Sleek Agent Arrow Cursor (Default moving state - Solid Classic Arrow) */
+/* ── 8. Normal arrow cursor (unchanged) ──────────────────────── */
 #page-agent-runtime_simulator-mask div:has(> [class*="_cursorRipple_"]) {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='32' height='32'%3E%3Cpath fill='%23f97316' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round' d='M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.42c.45 0 .67-.54.35-.85L5.85 2.85a.5.5 0 0 0-.85.35Z'/%3E%3C/svg%3E") !important;
-    background-size: contain !important;
-    background-repeat: no-repeat !important;
-    width: 32px !important;
-    height: 32px !important;
-    margin-left: -5px !important; /* Align hotspot to arrow tip */
-    margin-top: -3px !important;
-    filter: drop-shadow(0px 4px 8px rgba(249, 115, 22, 0.8));
-    transition: background-image 0.15s ease-in-out, transform 0.1s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='36' height='36'%3E%3Cpath fill='%23fb923c' stroke='%23fff8f0' stroke-width='1' stroke-linejoin='round' d='M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.42c.45 0 .67-.54.35-.85L5.85 2.85a.5.5 0 0 0-.85.35Z'/%3E%3C/svg%3E") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  width: 36px !important;
+  height: 36px !important;
+  margin-left: -5px !important;
+  margin-top: -3px !important;
+  filter:
+    drop-shadow(0 0 1px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 2px 6px rgba(249, 115, 22, 0.5))
+    drop-shadow(0 0 10px rgba(249, 115, 22, 0.3)) !important;
 }
 
-/* Custom Sleek Hand Tool (When agent clicks/interacts - Solid Classic Hand) */
+#page-agent-runtime_simulator-mask [class*="_cursorRipple_"]::after {
+  border-color: #f97316 !important;
+}
+
+/* ── 9. Clicking hand cursor (redesigned) ────────────────────── */
+/*
+   New hand path — clean anatomical pointer:
+   • Rounded index-finger tip at (11.5, 0), the hotspot
+   • Straight finger body x=9.75–13.25, y=0–10.5
+   • Three-step knuckle staircase on the right (middle/ring/pinky)
+   • Thumb-index web notch on the left at y=10.5–13
+   • Rounded palm base (r=5.5) closing the shape
+
+   Hotspot: tip is at svg-x 11.5 in a 24-unit box.
+   At 38px render size: 11.5/24 × 38 ≈ 18px from left edge.
+   margin-left: -18px aligns the fingertip to the click target.
+*/
 #page-agent-runtime_simulator-mask div[class*="_clicking_"]:has(> [class*="_cursorRipple_"]) {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='32' height='32'%3E%3Cpath fill='%23f97316' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round' d='M10.5 2.5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v7.51h1.03c.8 0 1.57.34 2.11.94l2.95 3.32c.56.63.88 1.45.88 2.3v.53c0 2.21-1.79 4-4 4h-6.42c-1.39 0-2.73-.61-3.66-1.67l-2.88-3.26c-.73-.83-.69-2.11.08-2.9.72-.74 1.91-.77 2.68-.07l1.73 1.57V8.5c0-1.38 1.12-2.5 2.5-2.5h.5v-1.5z'/%3E%3C/svg%3E") !important;
-    margin-left: -12px !important; /* Shift hotspot for index finger tip */
-    margin-top: -2px !important;
-    transform: scale(0.9); /* Click feedback */
-}
-
-/* Sleek top scanning indicator */
-#page-agent-runtime_simulator-mask::before {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    height: 3px !important;
-    background: linear-gradient(90deg, transparent, #f97316, #fb923c, #f97316, transparent) !important;
-    background-size: 200% 100% !important;
-    opacity: 0.9 !important;
-    animation: professionalScanBar 2s linear infinite !important;
-    box-shadow: 0 2px 10px rgba(249, 115, 22, 0.5) !important;
-}
-
-@keyframes professionalBreathe {
-    0%, 100% { box-shadow: inset 0 0 0 2px rgba(249, 115, 22, 0.2), inset 0 0 15px rgba(249, 115, 22, 0.05); }
-    50% { box-shadow: inset 0 0 0 2px rgba(249, 115, 22, 0.6), inset 0 0 30px rgba(249, 115, 22, 0.15); }
-}
-
-@keyframes professionalScanBar {
-    0% { background-position: 100% 0; }
-    100% { background-position: -100% 0; }
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='38' height='38'%3E%3Cpath fill='%23fb923c' stroke='%23fff8f0' stroke-width='1.1' stroke-linejoin='round' stroke-linecap='round' d='M9.75 1.75C9.75 0.784 10.534 0 11.5 0C12.466 0 13.25 0.784 13.25 1.75V10.5H14.25C15.077 10.5 15.75 11.173 15.75 12V12.5H16.25C17.077 12.5 17.75 13.173 17.75 14V14.5H18.25C19.077 14.5 19.75 15.173 19.75 16V18.5A5.5 5.5 0 0 1 14.25 24H9.75A5.5 5.5 0 0 1 4.25 18.5V14C4.25 13.173 4.923 12.5 5.75 12.5H6.25V11.5C6.25 10.673 6.923 10 7.75 10C8.577 10 9.25 10.673 9.25 11.5V13H9.75V1.75Z'/%3E%3C/svg%3E") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  width: 38px !important;
+  height: 38px !important;
+  margin-left: -18px !important;
+  margin-top: -1px !important;
+  filter:
+    drop-shadow(0 0 1px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 2px 8px  rgba(249, 115, 22, 0.75))
+    drop-shadow(0 0 18px rgba(249, 115, 22, 0.55)) !important;
+  transform: scale(0.92) !important;
 }

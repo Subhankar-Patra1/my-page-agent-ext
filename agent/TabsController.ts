@@ -220,7 +220,7 @@ export class TabsController {
 			payload: {
 				groupId: this.tabGroupId,
 				properties: {
-					title: `PageAgent(${this.task})`,
+					title: `OryonixAI(${this.task})`,
 					color: randomColor(),
 					collapsed: false,
 				},
