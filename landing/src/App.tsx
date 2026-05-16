@@ -71,17 +71,10 @@ function Navbar({ visible, activeSection, onNavClick }: { visible: boolean, acti
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return (
-    <AnimatePresence>
-      {visible && (
-        <motion.header
-          className={`nav ${scrolled ? "nav--scrolled" : ""}`}
-          initial={{ y: -100, x: "-50%" }}
-          animate={{ y: 0, x: "-50%" }}
-          exit={{ y: -100, x: "-50%" }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          style={{ willChange: "auto" }}
-        >
+    <>
+      <header
+        className={`nav ${scrolled ? "nav--scrolled" : ""} ${visible ? "nav--visible" : ""}`}
+      >
           <nav className="container nav__inner">
             <a href="/" className="nav__logo">
               <img src="/logo.svg" alt="Oryonix AI Logo" className="nav__logo-img" />
@@ -120,9 +113,8 @@ function Navbar({ visible, activeSection, onNavClick }: { visible: boolean, acti
               )}
             </AnimatePresence>
           </nav>
-        </motion.header>
-      )}
-    </AnimatePresence>
+        </header>
+    </>
   );
 }
 
