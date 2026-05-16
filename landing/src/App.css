@@ -23,6 +23,9 @@
   max-width: 1200px;
   z-index: 1000;
   padding: 6px 6px 6px 20px;
+  background: rgba(15, 12, 10, 0.4);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   transition: all 0.4s var(--ease-out-expo);
@@ -35,28 +38,13 @@
   pointer-events: auto;
 }
 
-.nav::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  z-index: -1;
-  background: rgba(15, 12, 10, 0.4);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  transition: all 0.4s var(--ease-out-expo);
-}
-
 .nav--visible.nav--scrolled {
   top: 16px;
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
-}
-
-.nav--visible.nav--scrolled::before {
   background: rgba(10, 6, 4, 0.6) !important;
   backdrop-filter: blur(24px) saturate(200%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
 }
 
 .nav__inner {
@@ -1684,6 +1672,9 @@ button:focus {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    background: rgba(15, 12, 10, 0.5) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     transition: all 0.3s var(--ease-out-expo) !important;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
@@ -1695,19 +1686,7 @@ button:focus {
     pointer-events: auto !important;
   }
 
-  .nav::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    z-index: -1;
-    background: rgba(15, 12, 10, 0.5) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-    transition: all 0.3s var(--ease-out-expo) !important;
-  }
-
-  .nav--visible.nav--scrolled::before {
+  .nav--visible.nav--scrolled {
     background: rgba(15, 12, 10, 0.7) !important;
     backdrop-filter: blur(24px) saturate(200%) !important;
     -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
