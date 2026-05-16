@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useRef } from "react";
 import Lenis from "lenis";
 // Added useScroll and useTransform for the stacking scroll effect
