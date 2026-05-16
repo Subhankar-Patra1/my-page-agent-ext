@@ -3,6 +3,8 @@ import { useAgent } from '../../agent/useAgent';
 import { AgentStatusGlow } from './components/AgentStatusGlow';
 import { HistoryPanel } from './components/HistoryPanel';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { ChartBlock } from './components/ChartBlock';
 import { storage } from '@wxt-dev/storage';
 import './App.css';
 
@@ -222,7 +224,20 @@ export default function App() {
               <img src="/Oryonix AI 2.png" alt="AI" />
             </div>
             <div className="ai-bubble-content markdown-body">
-              <ReactMarkdown>{finalSummary}</ReactMarkdown>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  code({ className, children }) {
+                    const lang = /language-(\w+)/.exec(className || '')?.[1]
+                    if (lang === 'chart') {
+                      return <ChartBlock code={String(children).replace(/\n$/, '')} />
+                    }
+                    return <code className={className}>{children}</code>
+                  },
+                }}
+              >
+                {finalSummary}
+              </ReactMarkdown>
             </div>
           </div>
         )}

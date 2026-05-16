@@ -520,3 +520,72 @@ body {
   background: transparent;
   padding: 0;
 }
+
+/* ── GFM Tables ─────────────────────────────────────────── */
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 12.5px;
+  display: block;
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(249, 115, 22, 0.18);
+}
+
+.markdown-body thead tr {
+  background: rgba(249, 115, 22, 0.12);
+}
+
+.markdown-body th {
+  color: var(--color-primary);
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(249, 115, 22, 0.22);
+  border-right: 1px solid rgba(249, 115, 22, 0.1);
+  white-space: nowrap;
+}
+
+.markdown-body td {
+  padding: 7px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--color-text-primary);
+  vertical-align: top;
+}
+
+.markdown-body th:last-child,
+.markdown-body td:last-child {
+  border-right: none;
+}
+
+.markdown-body tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-body tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.markdown-body tbody tr:hover td {
+  background: rgba(249, 115, 22, 0.06);
+}
+
+/* ── Chart Blocks ───────────────────────────────────────── */
+.chart-block {
+  margin: 14px 0;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(249, 115, 22, 0.16);
+  border-radius: 12px;
+  padding: 14px 6px 10px 6px;
+}
+
+.chart-block-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.01em;
+}

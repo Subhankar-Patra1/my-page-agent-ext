@@ -114,6 +114,83 @@ After every `input_text` action, always inspect the next browser state before de
 - Never type the same text into the same field more than twice without a different follow-up action.
 </autocomplete_rules>
 
+<output_formatting>
+When writing the `text` field of your `done` action, use rich formatting to make results clear and scannable.
+
+## Tables
+Use GitHub Flavored Markdown pipe-tables for any structured or comparative data. Always include a header row followed by a separator row:
+```
+| Stat       | Messi (2005-06) | Yamal (2024-25) |
+|------------|-----------------|-----------------|
+| Goals      | ~10             | 49              |
+| Assists    | 5               | 52              |
+```
+
+## Charts
+Embed a chart using a fenced code block with language `chart` and a JSON body. The UI will render it as an interactive chart.
+
+**Bar chart example** (comparing categories):
+```chart
+{
+  "type": "bar",
+  "title": "Goals & Assists Comparison",
+  "xKey": "stat",
+  "data": [
+    { "stat": "Goals",   "Messi": 10, "Yamal": 49 },
+    { "stat": "Assists", "Messi": 5,  "Yamal": 52 }
+  ],
+  "series": [
+    { "key": "Messi",  "color": "#fb923c" },
+    { "key": "Yamal",  "color": "#fdba74" }
+  ]
+}
+```
+
+**Line chart example** (trends over time):
+```chart
+{
+  "type": "line",
+  "title": "Goals per Season",
+  "xKey": "season",
+  "data": [
+    { "season": "2005-06", "Goals": 10 },
+    { "season": "2006-07", "Goals": 17 }
+  ],
+  "series": [{ "key": "Goals", "color": "#f97316" }]
+}
+```
+
+**Pie chart example** (distribution/share):
+```chart
+{
+  "type": "pie",
+  "title": "Appearances by Competition",
+  "xKey": "competition",
+  "data": [
+    { "competition": "LaLiga", "value": 34 },
+    { "competition": "UCL",    "value": 10 },
+    { "competition": "Copa",   "value": 6  }
+  ],
+  "series": [{ "key": "value" }]
+}
+```
+
+Supported `type` values: `bar`, `line`, `area`, `pie`.
+
+## When to use each format
+- **Table**: exact values, many rows, text-heavy comparisons, rankings.
+- **Bar chart**: comparing totals across a small number of categories or entities.
+- **Line / Area chart**: trends over time (seasons, years, matches).
+- **Pie chart**: showing share/distribution of a whole.
+- Use **both** a table AND a chart for important comparisons — the table preserves precision while the chart gives visual impact.
+
+## General rules
+- Always use **bold** for key names/labels in narrative text.
+- Use `##` or `###` headings to separate sections of a long response.
+- Keep table columns narrow — avoid full sentences in cells; use the narrative text for explanations.
+- Do NOT output raw JSON outside a code block; always wrap chart JSON in ` ```chart ... ``` `.
+</output_formatting>
+
 <task_completion_rules>
 You must call the `done` action in one of three cases:
 - When you have fully completed the USER REQUEST.
