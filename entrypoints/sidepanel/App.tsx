@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { ChartBlock } from './components/ChartBlock';
 import { storage } from '@wxt-dev/storage';
+import { Rocket, Eye, Zap, RotateCcw } from 'lucide-react';
 import './App.css';
 
 export default function App() {
@@ -145,10 +146,7 @@ export default function App() {
               fontSize: '0.85rem', fontWeight: 600
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
+            <RotateCcw size={16} strokeWidth={2.5} />
             History
           </button>
           <AgentStatusGlow status={mapStatus()} />
@@ -179,21 +177,21 @@ export default function App() {
             
             <div className="landing-features">
               <div className="feature-item">
-                <span className="feature-icon">✨</span>
+                <span className="feature-icon"><Rocket size={20} color="#f97316" strokeWidth={1.5} /></span>
                 <div className="feature-text">
                   <strong>Autonomous Execution</strong>
                   <span>Give me a goal and watch me navigate.</span>
                 </div>
               </div>
               <div className="feature-item">
-                <span className="feature-icon">👁️</span>
+                <span className="feature-icon"><Eye size={20} color="#f97316" strokeWidth={1.5} /></span>
                 <div className="feature-text">
                   <strong>Visual DOM Perception</strong>
                   <span>Advanced spatial understanding of web layouts.</span>
                 </div>
               </div>
               <div className="feature-item">
-                <span className="feature-icon">⚡</span>
+                <span className="feature-icon"><Zap size={20} color="#f97316" strokeWidth={1.5} /></span>
                 <div className="feature-text">
                   <strong>Intelligent Summarization</strong>
                   <span>Concise insights and actionable results.</span>
@@ -211,7 +209,7 @@ export default function App() {
 
         {(status === 'running' || activity) && (
           <div className="chat-status-bar">
-            <div className="status-spinner"></div>
+            <div className="loader"></div>
             <span className="status-text">
               {getThinkingText()}
             </span>

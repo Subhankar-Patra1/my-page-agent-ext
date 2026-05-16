@@ -221,17 +221,40 @@ body {
   -webkit-backdrop-filter: blur(12px);
 }
 
-.status-spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid var(--color-text-secondary);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+.loader {
+  width: 20px;
+  min-width: 20px;
+  flex-shrink: 0;
+  aspect-ratio: 1.154;
+  position: relative;
+  background: conic-gradient(from 120deg at 50% 64%, #0000, #fdba74 1deg 120deg, #0000 121deg);
+  animation: l27-0 1.5s infinite cubic-bezier(0.3,1,0,1);
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.loader:before,
+.loader:after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  transform-origin: 50% 66%;
+  animation: l27-1 1.5s infinite;
+}
+
+.loader:after {
+  --s: -1;
+}
+
+@keyframes l27-0 {
+  0%,30% { transform: rotate(0); }
+  70% { transform: rotate(120deg); }
+  70.01%,100% { transform: rotate(360deg); }
+}
+
+@keyframes l27-1 {
+  0% { transform: rotate(calc(var(--s,1)*120deg)) translate(0); }
+  30%,70% { transform: rotate(calc(var(--s,1)*120deg)) translate(calc(var(--s,1)*-2px), 4px); }
+  100% { transform: rotate(calc(var(--s,1)*120deg)) translate(0); }
 }
 
 /* Input Area (Bottom docked) */
@@ -348,12 +371,12 @@ body {
 .landing-state {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
-  height: 100%;
+  min-height: min-content;
   flex: 1;
-  padding: 0 24px;
+  padding: 40px 24px 24px 24px;
   animation: fadeIn 0.5s ease-out;
 }
 
@@ -478,7 +501,7 @@ body {
 
 .markdown-body strong {
   font-weight: 700;
-  color: var(--color-primary);
+  color: #fdba74;
 }
 
 .markdown-body ul, .markdown-body ol {
@@ -493,7 +516,7 @@ body {
 .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
   margin: 16px 0 8px 0;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: #fdba74;
 }
 
 .markdown-body h1:first-child, .markdown-body h2:first-child, .markdown-body h3:first-child {
@@ -527,10 +550,11 @@ body {
   border-collapse: collapse;
   margin: 14px 0;
   font-size: 12.5px;
-  display: block;
-  overflow-x: auto;
+  display: table;
+  table-layout: fixed;
   border-radius: 8px;
   border: 1px solid rgba(249, 115, 22, 0.18);
+  overflow: hidden;
 }
 
 .markdown-body thead tr {
@@ -538,13 +562,14 @@ body {
 }
 
 .markdown-body th {
-  color: var(--color-primary);
+  color: #fdba74;
   font-weight: 600;
   padding: 8px 12px;
   text-align: left;
-  border-bottom: 1px solid rgba(249, 115, 22, 0.22);
+  border-bottom: 1px solid rgba(253, 186, 116, 0.3);
   border-right: 1px solid rgba(249, 115, 22, 0.1);
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .markdown-body td {
@@ -553,6 +578,7 @@ body {
   border-right: 1px solid rgba(255, 255, 255, 0.04);
   color: var(--color-text-primary);
   vertical-align: top;
+  word-break: break-word;
 }
 
 .markdown-body th:last-child,

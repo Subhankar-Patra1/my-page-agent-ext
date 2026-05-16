@@ -54,7 +54,7 @@ export function HistoryPanel({ onClose, onRestore, status }: HistoryPanelProps) 
   };
 
   if (loading) {
-    return <div className="history-panel-container"><div className="status-spinner"></div></div>;
+    return <div className="history-panel-container"><div className="loader"></div></div>;
   }
 
   const isRunning = status === 'running' || status === 'thinking';

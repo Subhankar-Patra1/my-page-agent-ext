@@ -15,6 +15,9 @@ export default defineConfig({
     },
   }),
   manifest: {
+    name: 'Oryonix AI',
+    short_name: 'Oryonix',
+    description: 'Your autonomous browser copilot.',
     permissions: ['tabs', 'storage', 'activeTab', 'scripting', 'sidePanel', 'tabGroups', 'alarms'],
     host_permissions: ['<all_urls>'],
     side_panel: {

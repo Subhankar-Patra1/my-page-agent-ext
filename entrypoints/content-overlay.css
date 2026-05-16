@@ -41,43 +41,42 @@ body,
   background-image: linear-gradient(to bottom left, #f97316, #ea580c, #f97316) !important;
 }
 
-/* ── 5. Mask container: outer ambient aura only ──────────────── */
+/* ── 5. Animated border angle property ───────────────────────── */
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* ── 6. Mask container — inward glow only ────────────────────── */
 #page-agent-runtime_simulator-mask {
   pointer-events: none !important;
   z-index: 2147483640 !important;
   background: transparent !important;
-  animation: maskAura 4s ease-in-out infinite !important;
+  /* Soft inward glow that pulses gently */
+  animation: innerAura 4s ease-in-out infinite !important;
 }
 
-@keyframes maskAura {
+@keyframes innerAura {
   0%, 100% {
     box-shadow:
-      0 0 60px  rgba(249, 115, 22, 0.06),
-      0 0 120px rgba(249, 115, 22, 0.03);
+      inset 0 0 60px  rgba(249, 115, 22, 0.15),
+      inset 0 0 120px rgba(249, 115, 22, 0.08),
+      inset 0 0 200px rgba(249, 115, 22, 0.04);
   }
   50% {
     box-shadow:
-      0 0 80px  rgba(249, 115, 22, 0.14),
-      0 0 160px rgba(249, 115, 22, 0.07);
+      inset 0 0 80px  rgba(249, 115, 22, 0.25),
+      inset 0 0 160px rgba(249, 115, 22, 0.14),
+      inset 0 0 260px rgba(249, 115, 22, 0.06);
   }
 }
 
-/* ── 7. Mesh-gradient breathing border (::after) ─────────────── */
+/* ── 7. Spinning conic-gradient border (::after) ─────────────── */
 /*
-   A 14-stop Aurora gradient spanning 400% of the element width.
-   background-position shifts in a slow diamond path so the visible
-   slice of the gradient drifts through:
-     deep rust → burnt orange → primary orange → peach → cream → back
-   giving the illusion of a living, breathing colour mesh.
-
-   clip-path carves out the page content area, leaving only a 14px
-   wide frame — inner rectangle is CCW so the nonzero fill rule
-   punches a clean hole through the center.
-
-   Three stacked drop-shadows build the layered ember glow:
-     tight (6px)  → crisp corona
-     mid   (20px) → warm halo
-     wide  (50px) → diffuse ambient
+   Thin 4px frame using clip-path with a rotating conic gradient.
+   Colors: Obsidian Ember palette (deep rust → orange → peach → back).
+   Glow is inward via the blurred ::before behind this layer.
 */
 #page-agent-runtime_simulator-mask::after {
   content: "" !important;
@@ -86,56 +85,73 @@ body,
   pointer-events: none !important;
   z-index: 2147483641 !important;
 
-  background-image: linear-gradient(
-    135deg,
-    #431407  0%,
-    #7c2d12  6%,
-    #c2410c 14%,
-    #ea580c 24%,
-    #f97316 36%,
-    #fb923c 46%,
-    #fdba74 52%,
-    #fff7ed 56%,
-    #fdba74 61%,
-    #fb923c 70%,
-    #f97316 80%,
-    #ea580c 90%,
-    #c2410c 96%,
-    #7c2d12 100%
+  background: conic-gradient(
+    from var(--border-angle),
+    #431407,
+    #7c2d12,
+    #ea580c,
+    #f97316,
+    #fb923c,
+    #f97316,
+    #ea580c,
+    #7c2d12,
+    #431407
   ) !important;
 
-  /* 400% width means only ~25% of the gradient is visible at once;
-     animating position drifts the slice through the full spectrum. */
-  background-size: 400% 400% !important;
+  /* Rounded hollow frame using mask compositing */
+  padding: 2px !important; /* border thickness */
+  border-radius: 16px !important; /* rounded corners */
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0) !important;
+  -webkit-mask-composite: xor !important;
+  mask-composite: exclude !important;
 
-  /* Inner CCW polygon = nonzero-rule hole → 14px frame */
-  clip-path: polygon(
-    0%   0%,  100% 0%,  100% 100%,  0%   100%,  0%   0%,
-    14px 14px,
-    14px calc(100% - 14px),
-    calc(100% - 14px) calc(100% - 14px),
-    calc(100% - 14px) 14px,
-    14px 14px
+  animation: borderSpin 8s linear infinite !important;
+}
+
+/* ── 8. Inward glow layer (::before) — blurred copy behind border ── */
+#page-agent-runtime_simulator-mask::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  z-index: 2147483639 !important;
+
+  background: conic-gradient(
+    from var(--border-angle),
+    #431407,
+    #7c2d12,
+    #ea580c,
+    #f97316,
+    #fb923c,
+    #f97316,
+    #ea580c,
+    #7c2d12,
+    #431407
   ) !important;
 
-  filter:
-    drop-shadow(0 0 6px  rgba(249, 115, 22, 0.95))
-    drop-shadow(0 0 20px rgba(249, 115, 22, 0.65))
-    drop-shadow(0 0 50px rgba(249, 115, 22, 0.35)) !important;
+  /* Same rounded mask for the glow layer */
+  padding: 2px !important;
+  border-radius: 16px !important;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0) !important;
+  -webkit-mask-composite: xor !important;
+  mask-composite: exclude !important;
 
-  animation: meshBreath 5s ease-in-out infinite !important;
+  /* Strong blur creates a prominent inward glow halo */
+  filter: blur(40px) !important;
+  opacity: 0.95 !important;
+  animation: borderSpin 8s linear infinite !important;
 }
 
-/* Diamond-path position drift + opacity breath in one keyframe block */
-@keyframes meshBreath {
-  0%   { background-position: 0%   0%;   opacity: 0.82; }
-  25%  { background-position: 100% 0%;   opacity: 1;    }
-  50%  { background-position: 100% 100%; opacity: 0.87; }
-  75%  { background-position: 0%   100%; opacity: 1;    }
-  100% { background-position: 0%   0%;   opacity: 0.82; }
+@keyframes borderSpin {
+  0%   { --border-angle: 0deg; }
+  100% { --border-angle: 360deg; }
 }
 
-/* ── 8. Normal arrow cursor (unchanged) ──────────────────────── */
+/* ── 9. Normal arrow cursor ───────────────────────────────────── */
 #page-agent-runtime_simulator-mask div:has(> [class*="_cursorRipple_"]) {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='36' height='36'%3E%3Cpath fill='%23fb923c' stroke='%23fff8f0' stroke-width='1' stroke-linejoin='round' d='M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.42c.45 0 .67-.54.35-.85L5.85 2.85a.5.5 0 0 0-.85.35Z'/%3E%3C/svg%3E") !important;
   background-size: contain !important;
@@ -154,7 +170,7 @@ body,
   border-color: #f97316 !important;
 }
 
-/* ── 9. Clicking hand cursor (redesigned) ────────────────────── */
+/* ── 10. Clicking hand cursor ────────────────────────────────── */
 /*
    New hand path — clean anatomical pointer:
    • Rounded index-finger tip at (11.5, 0), the hotspot

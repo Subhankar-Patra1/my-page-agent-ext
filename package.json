@@ -1,6 +1,6 @@
 {
-  "name": "wxt-react-starter",
-  "description": "manifest.json description",
+  "name": "oryonix-ai",
+  "description": "Your autonomous browser copilot.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -18,7 +18,8 @@
     "@page-agent/core": "^1.7.1",
     "@page-agent/llms": "^1.7.1",
     "@page-agent/page-controller": "^1.7.1",
-    "lucide-react": "^1.8.0",
+    "@phosphor-icons/react": "^2.1.10",
+    "lucide-react": "^1.16.0",
     "page-agent": "^1.7.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
