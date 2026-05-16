@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useRef } from "react";
 import Lenis from "lenis";
 // Added useScroll and useTransform for the stacking scroll effect
@@ -70,17 +71,11 @@ function Navbar({ visible, activeSection, onNavClick }: { visible: boolean, acti
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.header
-          className={`nav ${scrolled ? "nav--scrolled" : ""}`}
-          initial={{ y: -100, x: "-50%", opacity: 0 }}
-          animate={{ y: 0, x: "-50%", opacity: 1 }}
-          exit={{ y: -100, x: "-50%", opacity: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-        >
+    <>
+      <header
+        className={`nav ${scrolled ? "nav--scrolled" : ""} ${visible ? "nav--visible" : ""}`}
+      >
           <nav className="container nav__inner">
             <a href="/" className="nav__logo">
               <img src="/logo.svg" alt="Oryonix AI Logo" className="nav__logo-img" />
@@ -119,9 +114,8 @@ function Navbar({ visible, activeSection, onNavClick }: { visible: boolean, acti
               )}
             </AnimatePresence>
           </nav>
-        </motion.header>
-      )}
-    </AnimatePresence>
+        </header>
+    </>
   );
 }
 
