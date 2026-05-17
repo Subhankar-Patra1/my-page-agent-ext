@@ -8,9 +8,8 @@ import {
   AppWindow, Sparkles, Lock, Rocket, Cpu, Eye, Star,
   Package, Plug, Terminal, CheckCircle, RefreshCw,
   CheckSquare, BarChart2, Lightbulb, ChevronUp, ChevronDown,
-  Gamepad2, Brain, Train, ScrollText, Calculator, Zap,
-  Sliders, Settings, ImagePlus, Upload, Mic, Send, Image as ImageIcon,
-  ArrowLeft, LayoutDashboard, Plus, Folder, Search, MessageSquare, Accessibility, Globe
+  Brain, Zap, Sliders, Settings,
+  ArrowLeft, LayoutDashboard, Plus, Folder, Search, MessageSquare, Accessibility
 } from "lucide-react";
 import "./App.css";
 
@@ -1386,7 +1385,7 @@ function FAQ() {
           <p>Still have questions? Can't find the answer you're looking for?</p>
         </div>
         <a href={SITE.github} className="btn btn--sm btn--glass faq-footer-cta__btn" target="_blank" rel="noopener noreferrer">
-          <GithubIcon size={16} style={{marginRight: '8px'}} /> Read Documentation
+          <span style={{ marginRight: '8px', display: 'inline-flex', alignItems: 'center' }}><GithubIcon size={16} /></span>Read Documentation
         </a>
       </motion.div>
     </section>
