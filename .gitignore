@@ -32,3 +32,14 @@ daemon/
 .env
 .env.local
 .env.*.local
+
+# Scratch and planning artifacts
+CHANGES_README.md
+FAQ_IMPROVEMENT_SUGGESTIONS.md
+FAQ_SECTION_PLAN.md
+LANDING_PAGE_ARCHITECTURE.md
+Modelfile.fara
+NAV_UI_PLANS.md
+skills.md
+VIDEO_SCRIPT_60S.md
+VIDEO_SECTION_PLAN.md
