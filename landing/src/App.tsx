@@ -808,6 +808,33 @@ function TryItOut() {
 
   const wait = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
 
+  useEffect(() => {
+    if (agentActive) {
+      const preventDefault = (e: Event) => {
+        e.preventDefault();
+      };
+      
+      // Block manual wheel/touch scrolls
+      window.addEventListener("wheel", preventDefault, { passive: false });
+      window.addEventListener("touchmove", preventDefault, { passive: false });
+      
+      // Block scroll keys
+      const preventKeyScroll = (e: KeyboardEvent) => {
+        const keys = ["ArrowUp", "ArrowDown", "Space", "PageUp", "PageDown", "Home", "End"];
+        if (keys.includes(e.code)) {
+          e.preventDefault();
+        }
+      };
+      window.addEventListener("keydown", preventKeyScroll, { passive: false });
+
+      return () => {
+        window.removeEventListener("wheel", preventDefault);
+        window.removeEventListener("touchmove", preventDefault);
+        window.removeEventListener("keydown", preventKeyScroll);
+      };
+    }
+  }, [agentActive]);
+
   const getCenter = (selector: string) => {
     const el = document.querySelector(selector);
     if (!el) return null;
