@@ -1052,9 +1052,24 @@ function TryItOut() {
 
           {/* HUD log panel */}
           <div className="ory-log">
-            <div className="ory-log-title">
-              <span className="ory-log-dot" />
-              Oryonix AI — Live
+            <div className="ory-log-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                <span className="ory-log-dot" />
+                Oryonix AI — Live
+              </div>
+              <button
+                onClick={() => {
+                  abortRef.current = true;
+                  endDemo();
+                }}
+                className="ory-log-stop-btn"
+                title="Stop Automation"
+              >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="4" y="4" width="16" height="16" rx="2" />
+                </svg>
+                Stop
+              </button>
             </div>
             {actionLog.slice(-6).map((msg, i) => (
               <div key={i} className="ory-log-entry">{msg}</div>
