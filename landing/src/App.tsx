@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useRef } from "react";
 import Lenis from "lenis";
-// Added useScroll and useTransform for the stacking scroll effect
 import { motion, AnimatePresence, useMotionValue, useMotionTemplate, useScroll, useTransform } from "framer-motion";
 import {
   Menu, X, Download, ArrowRight, Play, Check,
@@ -492,15 +491,15 @@ const TESTIMONIALS = [
 ];
 const OS_FEATURES = ["Full multi-tab browser agent", "Local LLM support (Ollama)", "Custom LLM endpoint support", "Smart page reading & interaction", "Tab grouping & management", "MIT Licensed — forever free"];
 const FOOTER_COLS = [
-  { title: "Product", links: [{ l: "Features", h: "#features" }, { l: "Demo", h: "#demo" }, { l: "How It Works", h: "#how-it-works" }] },
-  { title: "Resources", links: [{ l: "Getting Started", h: "#" }, { l: "FAQ", h: "#faq" }] },
-  { title: "Connect", links: [{ l: "GitHub", h: SITE.github }, { l: "X (Twitter)", h: "#" }, { l: "Report a Bug", h: "#" }] },
+  { title: "Product", links: [{ l: "Features", h: "#features" }, { l: "Demo", h: "#demo" }, { l: "How It Works", h: "#how-it-works" }, { l: "Changelog", h: "#" }] },
+  { title: "Resources", links: [{ l: "Documentation", h: "#" }, { l: "Getting Started", h: "#" }, { l: "API Reference", h: "#" }, { l: "FAQ", h: "#faq" }, { l: "Terms of Use", h: "/terms.html" }, { l: "Privacy Policy", h: "/privacy.html" }] },
+  { title: "Connect", links: [{ l: "GitHub", h: SITE.github }, { l: "Twitter", h: "#" }, { l: "Discord", h: "#" }, { l: "Report a Bug", h: "#" }] },
 ];
 
 /* ─── SVG Icons ─── */
-const GithubIcon = ({ size = 20 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+const GithubIcon = ({ size = 20, style }: { size?: number, style?: React.CSSProperties }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" style={style}>
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
   </svg>
 );
 
@@ -1137,7 +1136,9 @@ function TryItOut() {
             }}>
               <span>
                 Powered by free testing LLM API. By clicking Run you agree to the{' '}
-                <a href="#" style={{ textDecoration: 'underline', color: 'rgba(255,255,255,0.7)' }}>Terms of Use</a>
+                <a href="/terms.html" style={{ textDecoration: 'underline', color: 'rgba(255,255,255,0.7)' }}>Terms of Use</a>
+                {' '}and{' '}
+                <a href="/privacy.html" style={{ textDecoration: 'underline', color: 'rgba(255,255,255,0.7)' }}>Privacy Policy</a>
               </span>
               <span style={{ background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>
                 Sandbox v2.4 (Active)
@@ -1482,7 +1483,6 @@ function FAQ() {
 
   const filteredFAQs = FAQS.map((faq, originalIndex) => ({ ...faq, originalIndex }))
     .filter(f => f.question.toLowerCase().includes(searchQuery.toLowerCase()));
-
   return (
     <section id="faq" className="section container" style={{ paddingBottom: '80px' }}>
       <div className="section__head">
