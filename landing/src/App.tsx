@@ -797,29 +797,208 @@ function TryItOut() {
   const [isRunning, setIsRunning] = useState(false);
   const [runStatus, setRunStatus] = useState<string | null>(null);
 
-  const handleRun = () => {
-    if (isRunning) return;
-    setIsRunning(true);
-    setRunStatus("Initializing agent sandbox...");
+  // Agent overlay state
+  const [agentActive, setAgentActive]   = useState(false);
+  const [cursorPx, setCursorPx]         = useState({ x: 0, y: 0 });
+  const [cursorType, setCursorType]     = useState<'arrow' | 'hand'>('arrow');
+  const [ripples, setRipples]           = useState<Array<{ id: number; x: number; y: number }>>([]);
+  const [actionLog, setActionLog]       = useState<string[]>([]);
+  const abortRef    = useRef(false);
+  const rippleIdRef = useRef(0);
 
+  const wait = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
+
+  const getCenter = (selector: string) => {
+    const el = document.querySelector(selector);
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    if (!r.width && !r.height) return null;
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  };
+
+  const fireRipple = (x: number, y: number) => {
+    const id = ++rippleIdRef.current;
+    setRipples(p => [...p, { id, x, y }]);
+    setTimeout(() => setRipples(p => p.filter(r => r.id !== id)), 700);
+  };
+
+  // Scroll the viewport to keep the document content aligned under the cursor
+  const scrollPageTo = (scrollY: number) => {
+    window.scrollTo({ top: scrollY, behavior: 'smooth' });
+  };
+
+  const visitSection = async (href: string, sectionId: string, label: string) => {
+    if (abortRef.current) return;
+
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+
+    // ── Step 1: page scrolls BACK TO TOP while cursor travels up to nav ──
+    //    Both run simultaneously so page content and cursor arrive together
+    scrollPageTo(0);
+    await wait(700); // let the scroll start so nav is at natural position
+    const navPos = getCenter(`a[href="${href}"]`);
+    setCursorType('arrow');
+    if (navPos) setCursorPx(navPos);
+    await wait(1300); // cursor transition 1.15s + small settle
+    if (abortRef.current) return;
+
+    // ── Step 2: hover pause as hand ──
+    setCursorType('hand');
+    await wait(420);
+
+    // ── Step 3: click — ripple + flash the nav link ──
+    const navEl = document.querySelector(`a[href="${href}"]`) as HTMLElement | null;
+    if (navPos) {
+      fireRipple(navPos.x, navPos.y);
+      if (navEl) {
+        const saved = navEl.style.cssText;
+        navEl.style.cssText += ';background:rgba(249,115,22,0.28)!important;border-radius:6px!important;transition:background .15s!important;';
+        setTimeout(() => { navEl.style.cssText = saved; }, 500);
+      }
+    }
+    setActionLog(p => [...p, `🖱️ Clicking ${label}...`]);
+    await wait(560);
+    if (abortRef.current) return;
+
+    // ── Step 4: page scrolls DOWN to section AND cursor drifts to viewport
+    //    center simultaneously — page content arrives under the cursor ──
+    const section = document.getElementById(sectionId);
+    section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setCursorType('arrow');
+    setCursorPx({ x: W * 0.44, y: H * 0.40 });
+    await wait(1200); // scroll + cursor both settle ~same time
+    if (abortRef.current) return;
+
+    // ── Step 5: small "reading" drift so agent looks alive ──
+    setCursorPx({ x: W * 0.46, y: H * 0.47 });
+    await wait(750);
+    if (abortRef.current) return;
+
+    // ── Step 6: glow-border the section ──
+    if (section) {
+      section.style.outline      = '3px solid rgba(249,115,22,0.78)';
+      section.style.boxShadow    = '0 0 0 6px rgba(249,115,22,0.10), 0 0 60px rgba(249,115,22,0.28)';
+      section.style.borderRadius = '12px';
+      section.style.transition   = 'outline .35s ease, box-shadow .35s ease';
+    }
+    setActionLog(p => [...p, `✓ ${label}`]);
+    await wait(2200);
+    if (section) {
+      section.style.outline    = '';
+      section.style.boxShadow  = '';
+      section.style.transition = '';
+    }
+    await wait(220);
+  };
+
+  const handleRun = async () => {
+    if (isRunning) return;
+    abortRef.current = false;
+    setIsRunning(true);
+    setRunStatus(null);
+    setActionLog([]);
+    setRipples([]);
+
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+
+    // Scroll to top + show overlay with cursor at page center
+    scrollPageTo(0);
+    setCursorPx({ x: W * 0.5, y: H * 0.5 });
+    setCursorType('arrow');
+    setAgentActive(true);
+    setActionLog(['🤖 Oryonix agent initializing...']);
+    await wait(900);
+    if (abortRef.current) { endDemo(); return; }
+
+    // Cursor sweeps up to nav area — page is already at top so both align
+    setCursorPx({ x: W * 0.5, y: 80 });
+    setActionLog(p => [...p, '🔍 Parsing navigation structure...']);
+    await wait(1300);
+
+    // Walk through every nav section
+    await visitSection('#features',    'features',    'Features');
+    await visitSection('#demo',        'demo',        'Demo');
+    await visitSection('#how-it-works','how-it-works','How It Works');
+    await visitSection('#open-source', 'open-source', 'Open Source');
+    if (abortRef.current) { endDemo(); return; }
+
+    // Simulate opening the extension — page scrolls to top, cursor glides top-right
+    scrollPageTo(0);
+    setCursorPx({ x: W - 76, y: 32 });
+    setCursorType('arrow');
+    await wait(1500);
+    if (abortRef.current) { endDemo(); return; }
+    setCursorType('hand');
+    await wait(500);
+    fireRipple(W - 76, 32);
+    setActionLog(p => [...p, '🔌 Opening Oryonix extension...']);
+    await wait(700);
+    if (abortRef.current) { endDemo(); return; }
+
+    // Summarise — cursor drifts to center, page stays at top
+    setCursorPx({ x: W * 0.5, y: H * 0.45 });
+    setActionLog(p => [...p, '📋 Summarizing page content...']);
+    await wait(1400);
+    if (abortRef.current) { endDemo(); return; }
+
+    // Return home — scroll to try-it-out, cursor follows to center
+    document.getElementById('try-it-out')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setCursorPx({ x: W * 0.5, y: H * 0.5 });
+    await wait(1100);
+    setActionLog(p => [...p, '✅ Task complete!']);
+    await wait(1800);
+
+    // Tear down overlay
+    setAgentActive(false);
+    setIsRunning(false);
+    setRunStatus("Task simulated successfully! See full autonomous execution in the Demo section below.");
     setTimeout(() => {
-      setRunStatus("Connecting to custom LLM endpoint...");
-      setTimeout(() => {
-        setRunStatus("Executing DOM analysis & navigation...");
-        setTimeout(() => {
-          setIsRunning(false);
-          setRunStatus("Task simulated successfully! See full autonomous execution in the Demo section below.");
-          setTimeout(() => {
-            const demoSec = document.getElementById("demo");
-            if (demoSec) demoSec.scrollIntoView({ behavior: 'smooth' });
-          }, 1500);
-        }, 1200);
-      }, 1000);
-    }, 800);
+      document.getElementById("demo")?.scrollIntoView({ behavior: 'smooth' });
+    }, 1500);
+  };
+
+  const endDemo = () => {
+    setAgentActive(false);
+    setIsRunning(false);
+    setRipples([]);
   };
 
   return (
     <section className="section container" id="try-it-out" style={{ paddingBottom: '80px', paddingTop: '40px' }}>
+
+      {/* ── Oryonix agent live overlay (full viewport) ── */}
+      {agentActive && (
+        <>
+          {/* Rolling-border glow frame */}
+          <div className="ory-overlay" />
+
+          {/* Orange cursor */}
+          <div
+            className={`ory-cursor ${cursorType === 'hand' ? 'ory-hand' : 'ory-arrow'}`}
+            style={{ left: cursorPx.x, top: cursorPx.y }}
+          />
+
+          {/* Click ripple rings */}
+          {ripples.map(r => (
+            <div key={r.id} className="ory-ripple" style={{ left: r.x, top: r.y }} />
+          ))}
+
+          {/* HUD log panel */}
+          <div className="ory-log">
+            <div className="ory-log-title">
+              <span className="ory-log-dot" />
+              Oryonix AI — Live
+            </div>
+            {actionLog.slice(-6).map((msg, i) => (
+              <div key={i} className="ory-log-entry">{msg}</div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* ── Card ── */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -841,7 +1020,7 @@ function TryItOut() {
           display: 'flex',
           flexDirection: 'column'
         }}>
-          {/* Top Header Banner */}
+          {/* Header */}
           <div style={{
             background: 'rgba(249, 115, 22, 0.12)',
             borderBottom: '2px solid #f97316',
@@ -858,9 +1037,9 @@ function TryItOut() {
             <span>Try It Now</span>
           </div>
 
-          {/* Content Area */}
+          {/* Content */}
           <div style={{ padding: '36px 32px' }}>
-            {/* Input Box */}
+            {/* Input + Run */}
             <div style={{
               background: '#160d0a',
               border: '1px solid rgba(249, 115, 22, 0.25)',
@@ -888,7 +1067,6 @@ function TryItOut() {
                   padding: 0
                 }}
               />
-
               <button
                 onClick={handleRun}
                 disabled={isRunning}
@@ -920,7 +1098,7 @@ function TryItOut() {
               </button>
             </div>
 
-            {/* Status Message */}
+            {/* Status message (shown after demo ends) */}
             <AnimatePresence>
               {runStatus && (
                 <motion.div
@@ -946,7 +1124,7 @@ function TryItOut() {
               )}
             </AnimatePresence>
 
-            {/* Footer Text */}
+            {/* Footer */}
             <div style={{
               marginTop: '24px',
               fontSize: '0.85rem',
@@ -958,7 +1136,8 @@ function TryItOut() {
               gap: '12px'
             }}>
               <span>
-                Powered by free testing LLM API. By clicking Run you agree to the <a href="#" style={{ textDecoration: 'underline', color: 'rgba(255,255,255,0.7)' }}>Terms of Use</a>
+                Powered by free testing LLM API. By clicking Run you agree to the{' '}
+                <a href="#" style={{ textDecoration: 'underline', color: 'rgba(255,255,255,0.7)' }}>Terms of Use</a>
               </span>
               <span style={{ background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>
                 Sandbox v2.4 (Active)

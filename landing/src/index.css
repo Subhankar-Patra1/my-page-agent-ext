@@ -130,3 +130,155 @@ img { max-width: 100%; display: block; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════
+   Oryonix Agent Live Demo Overlay
+   Mirrors the extension's content-overlay.css visuals
+   ═══════════════════════════════════════════════════ */
+
+@property --ory-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes oryAngleSpin { to { --ory-angle: 360deg; } }
+
+@keyframes oryFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes oryFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes oryRipple {
+  0%   { transform: translate(-50%,-50%) scale(0.1); opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(3.2); opacity: 0; }
+}
+
+@keyframes oryDotPulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(251,191,36,.9), 0 0 12px rgba(251,191,36,.55), 0 0 22px rgba(251,191,36,.25);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(251,191,36,1), 0 0 20px rgba(251,191,36,.85), 0 0 40px rgba(251,191,36,.5);
+    transform: scale(1.35);
+  }
+}
+
+/* Full-viewport glow frame — same inward glow + rolling conic border as the extension */
+.ory-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 8888;
+  pointer-events: none;
+  border-radius: 12px;
+  box-shadow:
+    inset 0 0 30px rgba(253,186,116,.75),
+    inset 0 0 90px rgba(251,146,60,.42);
+  animation: oryFadeIn .4s ease forwards;
+}
+
+.ory-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--ory-angle),
+    #ea580c, #fb923c, #fdba74, #ffffff, #fdba74, #fb923c, #ea580c
+  );
+  padding: 3px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: oryAngleSpin 4s linear infinite;
+}
+
+/* Orange arrow cursor — exact SVG from content-overlay.css */
+.ory-cursor {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  z-index: 8890;
+  pointer-events: none;
+  background-size: contain;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0 1px rgba(0,0,0,.6)) drop-shadow(0 2px 8px rgba(249,115,22,.6));
+  transition: left 1.15s cubic-bezier(.4,0,.2,1), top 1.15s cubic-bezier(.4,0,.2,1);
+}
+
+.ory-arrow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='36' height='36'%3E%3Cpath fill='%23fb923c' stroke='%23fff8f0' stroke-width='1' stroke-linejoin='round' d='M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.42c.45 0 .67-.54.35-.85L5.85 2.85a.5.5 0 0 0-.85.35Z'/%3E%3C/svg%3E");
+}
+
+.ory-hand {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='36' height='36'%3E%3Cpath fill='%23F26510' stroke='%23fff8f0' stroke-width='0.6' stroke-linejoin='round' d='M9 2a1.5 1.5 0 0 1 1.5 1.5V9a1.5 1.5 0 0 1 1.5-1 1.5 1.5 0 0 1 1.5 1.5 1.5 1.5 0 0 1 1-1 1.5 1.5 0 0 1 1.5 1.5 1.5 1.5 0 0 1 1-1 1.5 1.5 0 0 1 1.5 1.5V17a5 5 0 0 1-5 5H11a5 5 0 0 1-5-5v-5.5a1.5 1.5 0 0 1 1.5-1.5V3.5A1.5 1.5 0 0 1 9 2z'/%3E%3C/svg%3E");
+}
+
+/* Click ripple ring */
+.ory-ripple {
+  position: fixed;
+  width: 48px;
+  height: 48px;
+  z-index: 8891;
+  pointer-events: none;
+  border-radius: 50%;
+  border: 2px solid #f97316;
+  box-shadow: 0 0 14px rgba(249,115,22,.55);
+  animation: oryRipple .62s ease-out forwards;
+}
+
+/* Action log panel — top-right HUD */
+.ory-log {
+  position: fixed;
+  top: 80px;
+  right: 18px;
+  z-index: 8892;
+  pointer-events: none;
+  background: rgba(8,5,3,.92);
+  border: 1px solid rgba(249,115,22,.4);
+  border-radius: 12px;
+  padding: 12px 15px;
+  min-width: 240px;
+  max-width: 300px;
+  backdrop-filter: blur(14px);
+  animation: oryFadeIn .35s ease;
+}
+
+.ory-log-title {
+  font-size: .67rem;
+  color: rgba(249,115,22,.8);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 9px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ory-log-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fbbf24;
+  flex-shrink: 0;
+  animation: oryDotPulse 2s ease-in-out infinite;
+}
+
+.ory-log-entry {
+  font-size: .77rem;
+  color: rgba(255,255,255,.6);
+  padding: 2px 0;
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  line-height: 1.45;
+  transition: color .2s;
+}
+
+.ory-log-entry:last-child { color: #fb923c; }
