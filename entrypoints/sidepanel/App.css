@@ -41,6 +41,18 @@ html, body, #root {
   box-sizing: border-box;
 }
 
+button, a, input, select, textarea, [role="button"] {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus, button:focus-visible,
+a:focus, a:focus-visible,
+[role="button"]:focus, [role="button"]:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-text-primary);
