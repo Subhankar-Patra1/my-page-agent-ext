@@ -25,7 +25,7 @@
   --glass-border: 1px solid rgba(249, 115, 22, 0.14);
   --glass-border-hover: 1px solid rgba(249, 115, 22, 0.35);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
-  --glass-shadow-hover: 0 12px 48px rgba(249, 115, 22, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  --glass-shadow-hover: 0 0 120px rgba(249, 115, 22, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
   --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-size-hero: clamp(3rem, 6vw, 5.5rem);
   --font-size-h2: clamp(2rem, 4vw, 3.5rem);
@@ -90,14 +90,39 @@ img { max-width: 100%; display: block; }
   background-clip: text;
 }
 
+.core-title-text {
+  background: linear-gradient(135deg, #ffffff 0%, #f97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 12px rgba(249, 115, 22, 0.25));
+  display: inline-block;
+}
+
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.15); }
   50% { box-shadow: 0 0 40px rgba(249, 115, 22, 0.3); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
 .text-success { color: var(--color-success); }
 .text-accent { color: var(--color-accent-primary); }
+
+@keyframes highlightPulse {
+  0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.8); background: rgba(249, 115, 22, 0.15); }
+  70% { box-shadow: 0 0 0 30px rgba(249, 115, 22, 0); background: rgba(249, 115, 22, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); background: transparent; }
+}
+
+.highlight-pulse {
+  animation: highlightPulse 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  border-radius: 24px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
