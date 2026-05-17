@@ -27,6 +27,7 @@ web-ext.config.ts
 AI_COWORKER/
 fara/
 daemon/
+shared_memory/
 
 # Environment files
 .env
