@@ -812,25 +812,29 @@ function TryItOut() {
     if (agentActive) {
       const preventDefault = (e: Event) => {
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
       };
       
-      // Block manual wheel/touch scrolls
-      window.addEventListener("wheel", preventDefault, { passive: false });
-      window.addEventListener("touchmove", preventDefault, { passive: false });
+      // Block manual wheel/touch scrolls in capturing phase
+      window.addEventListener("wheel", preventDefault, { passive: false, capture: true });
+      window.addEventListener("touchmove", preventDefault, { passive: false, capture: true });
       
-      // Block scroll keys
+      // Block scroll keys in capturing phase
       const preventKeyScroll = (e: KeyboardEvent) => {
         const keys = ["ArrowUp", "ArrowDown", "Space", "PageUp", "PageDown", "Home", "End"];
         if (keys.includes(e.code)) {
           e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
         }
       };
-      window.addEventListener("keydown", preventKeyScroll, { passive: false });
+      window.addEventListener("keydown", preventKeyScroll, { passive: false, capture: true });
 
       return () => {
-        window.removeEventListener("wheel", preventDefault);
-        window.removeEventListener("touchmove", preventDefault);
-        window.removeEventListener("keydown", preventKeyScroll);
+        window.removeEventListener("wheel", preventDefault, { capture: true });
+        window.removeEventListener("touchmove", preventDefault, { capture: true });
+        window.removeEventListener("keydown", preventKeyScroll, { capture: true });
       };
     }
   }, [agentActive]);
@@ -927,6 +931,11 @@ function TryItOut() {
     setActionLog([]);
     setRipples([]);
 
+    // Stop Lenis custom scrolling to lock user scroll inputs
+    if ((window as any).lenis) {
+      (window as any).lenis.stop();
+    }
+
     const W = window.innerWidth;
     const H = window.innerHeight;
 
@@ -962,6 +971,12 @@ function TryItOut() {
     setAgentActive(false);
     setIsRunning(false);
     setRunStatus("Task simulated successfully!");
+    
+    // Restore Lenis scrolling
+    if ((window as any).lenis) {
+      (window as any).lenis.start();
+    }
+
     setTimeout(() => {
       document.getElementById("hero")?.scrollIntoView({ behavior: 'smooth' });
     }, 1500);
@@ -971,6 +986,11 @@ function TryItOut() {
     setAgentActive(false);
     setIsRunning(false);
     setRipples([]);
+    
+    // Restore Lenis scrolling
+    if ((window as any).lenis) {
+      (window as any).lenis.start();
+    }
   };
 
   return (
