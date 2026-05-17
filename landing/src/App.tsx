@@ -953,9 +953,9 @@ function TryItOut() {
     // Tear down overlay
     setAgentActive(false);
     setIsRunning(false);
-    setRunStatus("Task simulated successfully! See full autonomous execution in the Demo section below.");
+    setRunStatus("Task simulated successfully!");
     setTimeout(() => {
-      document.getElementById("demo")?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById("hero")?.scrollIntoView({ behavior: 'smooth' });
     }, 1500);
   };
 
