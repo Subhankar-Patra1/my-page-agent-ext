@@ -277,7 +277,7 @@ export default function App() {
             title="Start a new chat"
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5.625 1.25a.625.625 0 1 0-1.25 0v3.125H1.25a.625.625 0 1 0 0 1.25h3.125V8.75a.625.625 0 1 0 1.25 0V5.625H8.75a.625.625 0 1 0 0-1.25H5.625V1.25z"/></svg>
-            New Chat
+            <span className="btn-text">New Chat</span>
           </button>
           <button
             className="btn-header btn-header-ghost"
@@ -285,7 +285,7 @@ export default function App() {
             title="View history"
           >
             <ClockCounterClockwiseIcon size={13} weight="bold" />
-            History
+            <span className="btn-text">History</span>
           </button>
           <div className="header-divider" />
           <AgentStatusGlow status={mapStatus()} />

@@ -74,6 +74,7 @@ body {
 }
 
 .popup-container {
+  position: relative;
   padding: 16px;
   width: 100%;
   box-sizing: border-box;
@@ -265,11 +266,13 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-bottom: 12px;
+  padding-bottom: 6px;
   padding-right: 4px;
   scrollbar-width: thin;
   scrollbar-color: rgba(249, 115, 22, 0.3) transparent;
 }
+
+
 
 .popup-chat-area::-webkit-scrollbar {
   width: 4px;
@@ -387,8 +390,10 @@ body {
 
 /* Input Area (Bottom docked) */
 .popup-input-area {
-  padding-top: 16px;
+  padding-top: 6px;
   width: 100%;
+  box-sizing: border-box;
+  background: transparent; /* Keep completely transparent so the text box's glow is never cut */
 }
 
 .chat-input-wrapper {
@@ -396,42 +401,43 @@ body {
   flex-direction: column;
   width: 100%;
   border-radius: 16px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(249, 115, 22, 0.22);
+  background: rgba(30, 30, 30, 0.7); /* Translucent floating glass background */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 10px rgba(249, 115, 22, 0.03);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
   overflow: visible;
 }
 
 .chat-input-wrapper:focus-within {
-  border-color: rgba(249, 115, 22, 0.4);
-  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.1), 0 8px 30px rgba(0, 0, 0, 0.15);
+  border-color: rgba(249, 115, 22, 0.55);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 14px rgba(249, 115, 22, 0.16);
 }
 
 .chat-input-wrapper.is-running {
-  border-color: rgba(249, 115, 22, 0.6);
-  box-shadow: 0 0 15px rgba(249, 115, 22, 0.15);
+  border-color: rgba(249, 115, 22, 0.75);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 18px rgba(249, 115, 22, 0.25);
 }
 
 .chat-disclaimer {
   display: flex;
   align-items: flex-start;
   gap: 5px;
-  padding: 5px 4px 0 4px;
-  color: rgba(255, 255, 255, 0.3);
+  padding: 8px 4px 0 4px;
+  color: rgba(255, 255, 255, 0.35);
   font-size: 10px;
   line-height: 1.4;
+  pointer-events: auto; /* Restore interactivity */
 }
 
 .chat-disclaimer a {
-  color: rgba(249, 115, 22, 0.6);
+  color: rgba(249, 115, 22, 0.65);
   text-decoration: none;
 }
 
 .chat-disclaimer a:hover {
-  color: rgba(249, 115, 22, 0.9);
+  color: rgba(249, 115, 22, 0.95);
 }
 
 .chat-input-field {
@@ -844,7 +850,7 @@ body {
   background: linear-gradient(145deg, rgba(249, 115, 22, 0.12) 0%, rgba(249, 115, 22, 0.04) 100%);
   border: 1px solid rgba(249, 115, 22, 0.35);
   transform: translateY(-3px);
-  box-shadow: 0 8px 32px rgba(249, 115, 22, 0.2);
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.14);
 }
 
 .feature-icon {
@@ -1033,4 +1039,59 @@ body {
   text-align: center;
   margin: 0 0 10px 0;
   letter-spacing: -0.01em;
+}
+
+/* ── Compact / Mobile / Side Panel Responsive Styles ───────── */
+@media (max-width: 480px) {
+  .popup-container {
+    padding: 12px; /* Slightly tighter padding for side panels */
+  }
+  
+  .popup-header {
+    margin-bottom: 12px;
+    gap: 8px;
+  }
+
+  .popup-brand {
+    gap: 6px;
+  }
+
+  .popup-logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  .popup-title {
+    font-size: 16px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .header-actions {
+    gap: 5px;
+  }
+
+  .btn-header {
+    padding: 0;
+    border-radius: 50%; /* Make icon buttons circular */
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-header .btn-text {
+    display: none; /* Hide button text on narrow panels */
+  }
+
+  .header-divider {
+    height: 12px;
+    margin: 0 1px;
+  }
+
+  .popup-input-area {
+    padding-top: 4px; /* Tighter padding on narrow viewports */
+  }
 }

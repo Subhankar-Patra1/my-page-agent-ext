@@ -67,7 +67,7 @@ export function useAgent(): UseAgentResult {
 				llmConfig = {
 					...llmConfig,
 					disableNamedToolChoice: true,
-					customFetch: createGeminiFetch(llmConfig.apiKey, llmConfig.model),
+					customFetch: createGeminiFetch(llmConfig.apiKey || '', llmConfig.model || ''),
 				}
 			} else if (isProxy) {
 				// For cloud testing proxies: clear apiKey so no Authorization header is sent
