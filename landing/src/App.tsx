@@ -681,6 +681,7 @@ const FeatureCard = ({ f, i, progress, range, targetScale }: { f: any, i: number
 
   return (
     <div
+      id={`feature-card-${i}`}
       className="stack-card-container"
       style={{
         position: "sticky",
@@ -931,33 +932,76 @@ function TryItOut() {
 
     // ── Step 4: page scrolls DOWN to section AND cursor drifts to viewport
     //    center simultaneously — page content arrives under the cursor ──
-    const section = document.getElementById(sectionId);
-    section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setCursorType('arrow');
-    setCursorPx({ x: W * 0.44, y: H * 0.40 });
-    await wait(1200); // scroll + cursor both settle ~same time
-    if (abortRef.current) return;
+    if (sectionId === 'features') {
+      // Specialized scroll behavior for Features section cards!
+      for (let i = 0; i < FEATURES.length; i++) {
+        if (abortRef.current) return;
+        const cardEl = document.getElementById(`feature-card-${i}`);
+        
+        // Log action for each card
+        const cardTitle = FEATURES[i].title;
+        setActionLog(p => [...p, `🔍 Scanning card: ${cardTitle}...`]);
+        
+        if (cardEl) {
+          cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        setCursorType('arrow');
+        // Drift cursor slightly offset
+        setCursorPx({ x: W * 0.44 + (i % 2 === 0 ? 15 : -15), y: H * 0.40 });
+        await wait(1200); // Wait for smooth scroll and cursor settle
+        if (abortRef.current) return;
 
-    // ── Step 5: small "reading" drift so agent looks alive ──
-    setCursorPx({ x: W * 0.46, y: H * 0.47 });
-    await wait(750);
-    if (abortRef.current) return;
+        // ── Step 5: small "reading" drift so agent looks alive ──
+        setCursorPx({ x: W * 0.46 + (i % 2 === 0 ? 15 : -15), y: H * 0.47 });
+        await wait(600);
+        if (abortRef.current) return;
 
-    // ── Step 6: glow-border the section ──
-    if (section) {
-      section.style.outline      = '3px solid rgba(249,115,22,0.78)';
-      section.style.boxShadow    = '0 0 0 6px rgba(249,115,22,0.10), 0 0 60px rgba(249,115,22,0.28)';
-      section.style.borderRadius = '12px';
-      section.style.transition   = 'outline .35s ease, box-shadow .35s ease';
+        // ── Step 6: glow-border the card ──
+        const innerCard = cardEl?.querySelector('.stack-card-sticky') as HTMLElement | null;
+        if (innerCard) {
+          innerCard.style.outline      = '3px solid rgba(249,115,22,0.78)';
+          innerCard.style.boxShadow    = '0 0 0 6px rgba(249,115,22,0.10), 0 0 60px rgba(249,115,22,0.28)';
+          innerCard.style.borderRadius = '24px';
+          innerCard.style.transition   = 'outline .35s ease, box-shadow .35s ease';
+        }
+        setActionLog(p => [...p, `✓ Card ${i + 1}: ${cardTitle}`]);
+        await wait(1800);
+        if (innerCard) {
+          innerCard.style.outline    = '';
+          innerCard.style.boxShadow  = '';
+          innerCard.style.transition = '';
+        }
+        await wait(100);
+      }
+    } else {
+      const section = document.getElementById(sectionId);
+      section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setCursorType('arrow');
+      setCursorPx({ x: W * 0.44, y: H * 0.40 });
+      await wait(1200); // scroll + cursor both settle ~same time
+      if (abortRef.current) return;
+
+      // ── Step 5: small "reading" drift so agent looks alive ──
+      setCursorPx({ x: W * 0.46, y: H * 0.47 });
+      await wait(750);
+      if (abortRef.current) return;
+
+      // ── Step 6: glow-border the section ──
+      if (section) {
+        section.style.outline      = '3px solid rgba(249,115,22,0.78)';
+        section.style.boxShadow    = '0 0 0 6px rgba(249,115,22,0.10), 0 0 60px rgba(249,115,22,0.28)';
+        section.style.borderRadius = '12px';
+        section.style.transition   = 'outline .35s ease, box-shadow .35s ease';
+      }
+      setActionLog(p => [...p, `✓ ${label}`]);
+      await wait(2200);
+      if (section) {
+        section.style.outline    = '';
+        section.style.boxShadow  = '';
+        section.style.transition = '';
+      }
+      await wait(220);
     }
-    setActionLog(p => [...p, `✓ ${label}`]);
-    await wait(2200);
-    if (section) {
-      section.style.outline    = '';
-      section.style.boxShadow  = '';
-      section.style.transition = '';
-    }
-    await wait(220);
   };
 
   const handleRun = async () => {
