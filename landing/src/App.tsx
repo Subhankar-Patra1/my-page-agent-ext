@@ -1460,8 +1460,6 @@ function Demo() {
             <video 
               src="/demo-video.mp4" 
               controls
-              autoPlay
-              muted
               loop
               style={{ width: '100%', display: 'block', borderRadius: 'inherit' }}
             >
