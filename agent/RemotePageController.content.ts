@@ -72,7 +72,6 @@ export function initPageController() {
 				case 'update_tree':
 				case 'clean_up_highlights':
 				case 'click_element':
-				case 'input_text':
 				case 'select_option':
 				case 'scroll':
 				case 'scroll_horizontally':
@@ -86,6 +85,141 @@ export function initPageController() {
 							})
 						)
 					break
+
+				case 'input_text': {
+					const isGoogleSheets = window.location.hostname.includes('docs.google.com') && window.location.pathname.includes('/spreadsheets')
+
+					if (isGoogleSheets) {
+						console.log('[Sheets] Intercepting input_text — blocking blur, redirecting cursor to cell')
+
+						// Auto-dismiss blocking dialogs
+						try {
+							const btns = document.querySelectorAll('button, [role="button"]')
+							for (const b of btns) {
+								const t = (b as HTMLElement).textContent?.trim().toLowerCase()
+								if (t === 'got it' || t === 'dismiss' || t === 'no thanks') {
+									(b as HTMLElement).click()
+									break
+								}
+							}
+						} catch (_) {}
+
+						// Helper: get cell position from Name Box value or active cell overlay
+						function getCellPosition(cellRef: string): DOMRect | null {
+							const activeCell = document.querySelector('.active-cell-border, [class*="cell-border"]') as HTMLElement
+							if (activeCell) {
+								const rect = activeCell.getBoundingClientRect()
+								if (rect.width > 0 && rect.height > 0) return rect
+							}
+							const match = cellRef.match(/^([A-Z]+)(\d+)$/)
+							if (match) {
+								const colIdx = match[1].charCodeAt(0) - 65
+								const rowIdx = parseInt(match[2]) - 1
+								const x = 32 + colIdx * 100
+								const y = 105 + rowIdx * 21
+								return new DOMRect(x, y, 100, 21)
+							}
+							return null
+						}
+
+						// Read current cell BEFORE typing
+						let currentCellRef = ''
+						try {
+							const nameBox = document.querySelector('#t-name-box, .docs-name-input, [class*="name-box"]') as HTMLInputElement
+							if (nameBox) currentCellRef = nameBox.value || ''
+						} catch (_) {}
+						const cellRect = getCellPosition(currentCellRef)
+
+						// Override getBoundingClientRect on the target element so the library's
+						// clickElement() computes CELL coordinates for the cursor, not formula bar
+						let targetElement: HTMLElement | null = null
+						let origGetBCR: (() => DOMRect) | null = null
+						if (cellRect) {
+							try {
+								const node = pc.selectorMap?.get((payload || [])[0])
+								if (node?.ref) {
+									targetElement = node.ref as HTMLElement
+									origGetBCR = targetElement.getBoundingClientRect.bind(targetElement)
+									targetElement.getBoundingClientRect = () => cellRect
+								}
+							} catch (_) {}
+						}
+
+						// Block blur
+						const origBlur = HTMLElement.prototype.blur
+						HTMLElement.prototype.blur = function () {}
+
+						pc[methodName](...(payload || []))
+							.then(async (result: any) => {
+								// Restore everything
+								HTMLElement.prototype.blur = origBlur
+								if (targetElement && origGetBCR) {
+									targetElement.getBoundingClientRect = origGetBCR
+								}
+
+								await new Promise(r => setTimeout(r, 150))
+
+								// Dispatch Enter to commit
+								let target: HTMLElement | null = document.activeElement as HTMLElement
+								try {
+									const node = pc.selectorMap?.get((payload || [])[0])
+									if (node?.ref) target = node.ref as HTMLElement
+								} catch (_) {}
+
+								const enterOpts = {
+									key: 'Enter', code: 'Enter',
+									keyCode: 13, which: 13,
+									bubbles: true, cancelable: true
+								}
+								for (const el of [target, document.activeElement as HTMLElement].filter(Boolean)) {
+									el!.dispatchEvent(new KeyboardEvent('keydown', enterOpts))
+									el!.dispatchEvent(new KeyboardEvent('keypress', enterOpts))
+									el!.dispatchEvent(new KeyboardEvent('keyup', enterOpts))
+								}
+
+								// Wait for commit
+								await new Promise(r => setTimeout(r, 500))
+
+								// Move cursor to the NEXT cell (after Enter moved selection down)
+								try {
+									let nextRef = ''
+									const nb = document.querySelector('#t-name-box, .docs-name-input, [class*="name-box"]') as HTMLInputElement
+									if (nb) nextRef = nb.value || ''
+									const nextRect = getCellPosition(nextRef)
+									if (nextRect) {
+										window.dispatchEvent(new CustomEvent('PageAgent::MovePointerTo', {
+											detail: { x: nextRect.left + nextRect.width / 2, y: nextRect.top + nextRect.height / 2 }
+										}))
+									}
+								} catch (_) {}
+
+								sendResponse({
+									success: true,
+									message: `✅ Typed "${(payload || [])[1]}" and pressed Enter in Google Sheets.`
+								})
+							})
+							.catch((error: any) => {
+								HTMLElement.prototype.blur = origBlur
+								if (targetElement && origGetBCR) {
+									targetElement.getBoundingClientRect = origGetBCR
+								}
+								sendResponse({
+									success: false,
+									error: error instanceof Error ? error.message : String(error),
+								})
+							})
+					} else {
+						pc[methodName](...(payload || []))
+							.then((result: any) => sendResponse(result))
+							.catch((error: any) =>
+								sendResponse({
+									success: false,
+									error: error instanceof Error ? error.message : String(error),
+								})
+							)
+					}
+					break
+				}
 
 				default:
 					sendResponse({
@@ -129,3 +263,4 @@ function getMethodName(action: string): string {
 			return action
 	}
 }
+

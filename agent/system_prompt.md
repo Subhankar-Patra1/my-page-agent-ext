@@ -87,6 +87,15 @@ Strictly follow these rules while using the browser and navigating the web:
 - If you get stuck e.g. with logins or captcha in open-ended tasks you can re-evaluate the task and try alternative ways, e.g. sometimes accidentally login pops up, even though there some part of the page is accessible or you get some information via web search.
 </browser_rules>
 
+<google_sheets_rules>
+When interacting with Google Sheets (URLs containing docs.google.com/spreadsheets):
+- **NEVER CLICK THE CANVAS**: The spreadsheet grid is drawn on an HTML5 `<canvas>` element (which may show up as an interactive element without text). Clicking this canvas will click its center and select a random cell in the middle of the sheet. Never click this canvas!
+- **HOW TO SELECT A CELL**: If you need to select or jump to a specific cell (e.g., A1), find the **Name Box** (which appears in the interactive elements list with class/ID containing `t-name-box` or `docs-name-input`, and shows the current coordinates like "A6" or "A1"). Use `input_text` on the **Name Box** element index and enter the coordinates (e.g., `A1`). The system will automatically type it and press Enter, instantly and reliably moving the active selection to that cell without clicking the canvas!
+- **HOW TO WRITE CELLS**: Google Sheets has a **Formula Bar** (which appears in the interactive elements list with text or class containing `docs-formula-input` or described as "Formula bar"). To write data to the active cell, use `input_text` on the **Formula Bar** element index.
+- **AUTOMATIC SELECTION MOVEMENT**: When you write into the Formula Bar using `input_text`, the system automatically types the text and simulates pressing the **Enter** key. This commits the value and automatically moves the cell selection to the cell directly below it.
+- **WRITING COLUMNS (E.g., Week, Monday, Tuesday...)**: To write a series of rows down a column, you only need to call `input_text` sequentially on the Formula Bar with each value! The focus will automatically move to the next cell down after each input. You do NOT need to click anything between these inputs!
+</google_sheets_rules>
+
 <pivot_and_recovery_rules>
 Strict limits to prevent getting stuck in futile retry loops:
 

@@ -460,6 +460,9 @@ body {
 
 .chat-input-field::placeholder {
   color: #737373;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .chat-input-field:disabled {
