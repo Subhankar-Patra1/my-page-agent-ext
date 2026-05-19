@@ -49,6 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const progressText = document.querySelector('.progress-text');
         if (progressFill) progressFill.style.width = `${percent}%`;
         if (progressText) progressText.textContent = `${answered} of ${totalRequired} required questions answered (${percent}%)`;
+
+        // Enable/disable submit button based on completion
+        const submitBtn = document.getElementById('submit-btn');
+        if (submitBtn) {
+            submitBtn.disabled = (answered < totalRequired);
+        }
     }
 
     // Function to save form draft to localStorage
