@@ -155,8 +155,8 @@ img { max-width: 100%; display: block; }
 }
 
 @keyframes oryRipple {
-  0%   { transform: translate(-50%,-50%) scale(0.1); opacity: 1; }
-  100% { transform: translate(-50%,-50%) scale(3.2); opacity: 0; }
+  0%   { transform: translate(calc(var(--x) - 50%), calc(var(--y) - 50%)) scale(0.1); opacity: 1; }
+  100% { transform: translate(calc(var(--x) - 50%), calc(var(--y) - 50%)) scale(3.2); opacity: 0; }
 }
 
 @keyframes oryDotPulse {
@@ -205,6 +205,8 @@ img { max-width: 100%; display: block; }
 /* Orange arrow cursor — exact SVG from content-overlay.css */
 .ory-cursor {
   position: fixed;
+  top: 0;
+  left: 0;
   width: 36px;
   height: 36px;
   z-index: 8890;
@@ -212,7 +214,7 @@ img { max-width: 100%; display: block; }
   background-size: contain;
   background-repeat: no-repeat;
   filter: drop-shadow(0 0 1px rgba(0,0,0,.6)) drop-shadow(0 2px 8px rgba(249,115,22,.6));
-  transition: left 1.15s cubic-bezier(.4,0,.2,1), top 1.15s cubic-bezier(.4,0,.2,1);
+  transition: transform 1.15s cubic-bezier(.4,0,.2,1);
 }
 
 .ory-arrow {
@@ -226,6 +228,8 @@ img { max-width: 100%; display: block; }
 /* Click ripple ring */
 .ory-ripple {
   position: fixed;
+  top: 0;
+  left: 0;
   width: 48px;
   height: 48px;
   z-index: 8891;

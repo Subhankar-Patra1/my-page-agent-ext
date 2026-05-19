@@ -15,6 +15,12 @@ import "./App.css";
 
 /* ─── Data ─── */
 const SITE = { name: "Oryonix AI", chrome: "#", github: "https://github.com/user/oryonix-ai" };
+
+const handleInstallClick = (e: React.MouseEvent) => {
+  e.preventDefault();
+  window.dispatchEvent(new CustomEvent('show-install-notice'));
+};
+
 const NAV = [
   { label: "Features", href: "#features" },
   { label: "Demo", href: "#demo" },
@@ -552,7 +558,7 @@ function Navbar({ visible, activeSection, onNavClick }: { visible: boolean, acti
             </ul>
           </div>
 
-          <a href={SITE.chrome} className="btn btn--primary btn--sm nav__cta">Install Free</a>
+          <a href={SITE.chrome} onClick={handleInstallClick} className="btn btn--primary btn--sm nav__cta">Install Free</a>
           <button className="nav__burger" onClick={() => setOpen(!open)} aria-label="Toggle menu">
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -560,7 +566,7 @@ function Navbar({ visible, activeSection, onNavClick }: { visible: boolean, acti
             {open && (
               <motion.div className="nav__mobile" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 {NAV.map(n => <a key={n.href} href={n.href} className="nav__mobile-link" onClick={(e) => { onNavClick(e, n.href); setOpen(false); }}>{n.label}</a>)}
-                <a href={SITE.chrome} className="btn btn--primary">Install Free</a>
+                <a href={SITE.chrome} onClick={handleInstallClick} className="btn btn--primary">Install Free</a>
               </motion.div>
             )}
           </AnimatePresence>
@@ -621,7 +627,7 @@ function Hero({ onNavClick }: { onNavClick?: (e: any, href: string) => void }) {
           <h1 className="hero__title">Your AI Co-pilot<br /><span className="accent-text">for the Browser</span></h1>
           <p className="hero__sub">Tell it what to do. Watch it work.<br className="hide-mobile" /> Open source & privacy-first.</p>
           <div className="hero__actions">
-            <a href={SITE.chrome} className="btn btn--primary btn--lg"><Download size={18} />Install Free</a>
+            <a href={SITE.chrome} onClick={handleInstallClick} className="btn btn--primary btn--lg"><Download size={18} />Install Free</a>
             <a href="#demo" className="btn btn--glass btn--lg" onClick={(e) => onNavClick?.(e, '#demo')}>Watch Demo<ArrowRight size={16} /></a>
           </div>
         </motion.div>
@@ -1091,12 +1097,12 @@ function TryItOut() {
           {/* Orange cursor */}
           <div
             className={`ory-cursor ${cursorType === 'hand' ? 'ory-hand' : 'ory-arrow'}`}
-            style={{ left: cursorPx.x, top: cursorPx.y }}
+            style={{ transform: `translate(${cursorPx.x}px, ${cursorPx.y}px)` }}
           />
 
           {/* Click ripple rings */}
           {ripples.map(r => (
-            <div key={r.id} className="ory-ripple" style={{ left: r.x, top: r.y }} />
+            <div key={r.id} className="ory-ripple" style={{ '--x': `${r.x}px`, '--y': `${r.y}px` } as React.CSSProperties} />
           ))}
 
           {/* HUD log panel */}
@@ -1524,7 +1530,7 @@ function OpenSource() {
           </div>
           <div className="os-card__actions">
             <a href={SITE.github} className="btn btn--glass btn--lg" target="_blank" rel="noopener noreferrer"><GithubIcon size={20} />Star on GitHub</a>
-            <a href={SITE.chrome} className="btn btn--primary btn--lg" target="_blank" rel="noopener noreferrer"><Download size={18} />Install Extension</a>
+            <a href={SITE.chrome} onClick={handleInstallClick} className="btn btn--primary btn--lg" target="_blank" rel="noopener noreferrer"><Download size={18} />Install Extension</a>
           </div>
           <div className="os-card__stats">
             <div className="os-card__stat"><span className="os-card__stat-val">MIT</span><span className="os-card__stat-label">License</span></div>
@@ -1574,7 +1580,7 @@ function CTA() {
           <h2>Ready to put your browser on <span className="accent-text">autopilot?</span></h2>
           <p>Install in seconds. Start automating immediately. No account required.</p>
           <div className="cta-card__actions">
-            <a href={SITE.chrome} className="btn btn--primary btn--lg"><Download size={18} />Install Free — Chrome Web Store</a>
+            <a href={SITE.chrome} onClick={handleInstallClick} className="btn btn--primary btn--lg"><Download size={18} />Install Free — Chrome Web Store</a>
             <a href={SITE.github} className="btn btn--glass btn--lg" target="_blank" rel="noopener noreferrer"><GithubIcon size={18} />Star on GitHub</a>
           </div>
         </motion.div>
@@ -1624,8 +1630,8 @@ function FAQ() {
         </h2>
       </div>
 
-      <div className="faq-search-wrapper" style={{ position: 'relative', maxWidth: '600px', margin: '0 auto 40px' }}>
-        <Search size={20} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-tertiary)' }} />
+      <div className="faq-search-wrapper">
+        <Search size={20} style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }} />
         <input 
           type="text" 
           placeholder="Search questions..." 
@@ -1774,8 +1780,15 @@ export default function App() {
   const [showTop, setShowTop] = useState(false);
   const [visibleDock, setVisibleDock] = useState(true);
   const [activeSection, setActiveSection] = useState("");
+  const [showInstallNotice, setShowInstallNotice] = useState(false);
   const lastScrollY = useRef(0);
   const isScrollingRef = useRef(false);
+
+  useEffect(() => {
+    const handleNotice = () => setShowInstallNotice(true);
+    window.addEventListener('show-install-notice', handleNotice);
+    return () => window.removeEventListener('show-install-notice', handleNotice);
+  }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -1941,7 +1954,7 @@ export default function App() {
                 <span>Github</span>
               </a>
               <div className="mobile-dock__div"></div>
-              <a href={SITE.chrome} className="mobile-dock__cta btn btn--primary btn--sm">
+              <a href={SITE.chrome} onClick={handleInstallClick} className="mobile-dock__cta btn btn--primary btn--sm">
                 <Download size={16} />
                 <span>Install</span>
               </a>
@@ -1969,6 +1982,128 @@ export default function App() {
           >
             <ChevronUp size={24} strokeWidth={2} />
           </motion.button>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showInstallNotice && (
+          <motion.div
+            className="install-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowInstallNotice(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(0,0,0,0.6)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              zIndex: 9999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '20px'
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                boxSizing: 'border-box',
+                background: 'linear-gradient(135deg, rgba(26,20,16,0.95), rgba(15,12,10,0.98))',
+                border: '1px solid rgba(249,115,22,0.3)',
+                borderRadius: '24px',
+                padding: '24px',
+                maxWidth: '480px',
+                width: '100%',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(249,115,22,0.1)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                gap: '20px'
+              }}
+            >
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '16px'
+              }}>
+                {/* Web Store Circle */}
+                <div style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  background: '#1a1410',
+                  border: '2px solid rgba(255,255,255,0.15)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  zIndex: 1,
+                  transform: 'translateX(8px)',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.4)'
+                }}>
+                  <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <line x1="21.17" y1="8" x2="12" y2="8"></line>
+                    <line x1="3.95" y1="6.06" x2="8.54" y2="14"></line>
+                    <line x1="10.88" y1="21.94" x2="15.46" y2="14"></line>
+                  </svg>
+                </div>
+
+                {/* Oryonix Circle */}
+                <div style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  background: '#1a1410',
+                  border: '2px solid rgba(249,115,22,0.5)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 2,
+                  transform: 'translateX(-8px)',
+                  boxShadow: '0 8px 24px rgba(249,115,22,0.2)'
+                }}>
+                  <img src="/logo.svg" alt="Oryonix" style={{ width: '32px', height: '32px' }} />
+                </div>
+              </div>
+              
+              <h3 style={{ fontSize: '1.4rem', margin: 0, color: 'white' }}>Pending Web Store Approval</h3>
+              <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem', lineHeight: '1.6', margin: 0 }}>
+                Oryonix AI is currently under review by the Chrome Web Store. Once approved, automatic 1-click installation will be available here.
+                <br/><br/>
+                For now, you can download the unpacked extension and install it manually from our GitHub repository.
+              </p>
+              
+              <div style={{ display: 'flex', gap: '12px', width: '100%', marginTop: '12px', flexDirection: 'column' }}>
+                <a 
+                  href={SITE.github} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="btn btn--primary btn--lg" 
+                  style={{ width: '100%', justifyContent: 'center' }}
+                  onClick={() => setShowInstallNotice(false)}
+                >
+                  <GithubIcon size={18} />
+                  <span style={{ marginLeft: '8px' }}>Get from GitHub</span>
+                </a>
+                <button 
+                  className="btn btn--glass btn--lg" 
+                  style={{ width: '100%', justifyContent: 'center', background: 'transparent' }}
+                  onClick={() => setShowInstallNotice(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

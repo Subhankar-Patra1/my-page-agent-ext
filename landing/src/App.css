@@ -1668,6 +1668,10 @@ button:focus {
     gap: 24px;
   }
 
+  .steps::before {
+    display: none;
+  }
+
   .step-card__connector {
     display: block;
     position: absolute;
@@ -1699,6 +1703,19 @@ button:focus {
 
   .os-card__actions .btn {
     width: 100%;
+  }
+
+  .os-card__stats {
+    gap: 12px;
+    width: 100%;
+  }
+
+  .os-card__stat-val {
+    font-size: 1.1rem;
+  }
+
+  .os-card__stat-label {
+    font-size: 0.65rem;
   }
 
   .cta-card {
@@ -2037,27 +2054,31 @@ button:focus {
 
 /* ═══════════ GRID FAQ ═══════════ */
 .faq-search-wrapper {
+  display: flex;
+  align-items: center;
   max-width: 600px;
   margin: 0 auto 64px;
-  position: relative;
+  padding: 0 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  transition: all 0.3s var(--ease-out-expo);
+}
+
+.faq-search-wrapper:focus-within {
+  border-color: rgba(249, 115, 22, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.1);
 }
 
 .faq-search-input {
   width: 100%;
-  padding: 16px 20px 16px 52px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 99px;
+  padding: 16px 0 16px 12px;
+  background: transparent;
+  border: none;
   color: white;
   font-size: 1rem;
   outline: none;
-  transition: all 0.3s var(--ease-out-expo);
-}
-
-.faq-search-input:focus {
-  border-color: rgba(249, 115, 22, 0.4);
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 20px rgba(249, 115, 22, 0.1);
 }
 
 .faq-card-grid {
