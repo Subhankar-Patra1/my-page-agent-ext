@@ -1920,6 +1920,82 @@ button:focus {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
+
+  /* Mobile Features Card Overhaul (Restoring Parallax) */
+  .stack-card-container {
+    /* Removed relative overrides so inline position: sticky works perfectly */
+    /* On mobile, we keep the original large margin-bottom to allow scrolling for the parallax effect */
+  }
+
+  .stack-card-sticky {
+    /* Set a strict height that fits mobile screens to prevent content blowout */
+    height: 480px !important;
+    min-height: 480px !important;
+    flex-direction: column !important;
+  }
+
+  .stack-card-inner {
+    flex-direction: column !important;
+  }
+
+  .stack-card-left {
+    max-width: 100% !important;
+    padding: 24px 24px 16px 24px !important;
+    flex: none !important;
+  }
+
+  .stack-card-left h3 {
+    font-size: 1.4rem !important;
+    margin-bottom: 8px !important;
+  }
+
+  .stack-card-left p {
+    font-size: 0.9rem !important;
+    margin-bottom: 12px !important;
+  }
+
+  .stack-card-right {
+    padding: 16px 16px 0 16px !important;
+    flex: 1 !important; /* Take remaining space */
+    min-height: 0 !important; /* Allow the visual flexbox to shrink instead of overflowing */
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 24px !important;
+    border-bottom-left-radius: 24px !important;
+    overflow: hidden;
+  }
+
+  /* Fix FAQ Title Clipping */
+  .section__head {
+    padding: 0 16px;
+  }
+
+  /* Try It Now Mobile Optimizations */
+  .try-it-now-card-wrapper {
+    margin: 0 16px !important;
+    max-width: calc(100% - 32px) !important;
+  }
+  .try-it-now-content {
+    padding: 24px 16px !important;
+  }
+  .try-it-now-input-wrapper {
+    padding: 8px 8px 8px 16px !important;
+    gap: 12px !important;
+  }
+
+  /* Fix scroll-top overlapping with FAQ search */
+  .scroll-top {
+    bottom: 85px;
+    right: 16px;
+    display: none; /* Hide scroll-top on mobile to prevent overlap */
+  }
+
+  /* FAQ Mobile Optimizations */
+  .faq-search-wrapper,
+  .faq-card-grid,
+  .core-features-grid {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
 }
 
 /* Hide dock on desktop */
@@ -2139,6 +2215,8 @@ button:focus {
     padding: 24px;
     justify-content: center;
     text-align: center;
+    margin: 64px 16px 0 !important;
+    max-width: calc(100% - 32px);
   }
   .faq-footer-cta__text { flex-direction: column; gap: 12px; }
 }

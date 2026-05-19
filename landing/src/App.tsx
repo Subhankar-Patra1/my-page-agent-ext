@@ -619,7 +619,7 @@ function Hero({ onNavClick }: { onNavClick?: (e: any, href: string) => void }) {
             <span className="hero__badge-dot" />Open Source & Free Forever
           </motion.div>
           <h1 className="hero__title">Your AI Co-pilot<br /><span className="accent-text">for the Browser</span></h1>
-          <p className="hero__sub">Tell it what to do. Watch it work.<br className="hide-mobile" />Open source & privacy-first.</p>
+          <p className="hero__sub">Tell it what to do. Watch it work.<br className="hide-mobile" /> Open source & privacy-first.</p>
           <div className="hero__actions">
             <a href={SITE.chrome} className="btn btn--primary btn--lg"><Download size={18} />Install Free</a>
             <a href="#demo" className="btn btn--glass btn--lg" onClick={(e) => onNavClick?.(e, '#demo')}>Watch Demo<ArrowRight size={16} /></a>
@@ -901,12 +901,13 @@ function TryItOut() {
 
     const W = window.innerWidth;
     const H = window.innerHeight;
+    const isMobile = W <= 768;
 
     // ── Step 1: page scrolls BACK TO TOP while cursor travels up to nav ──
     //    Both run simultaneously so page content and cursor arrive together
     scrollPageTo(0);
     await wait(700); // let the scroll start so nav is at natural position
-    const navPos = getCenter(`a[href="${href}"]`);
+    const navPos = getCenter(isMobile ? `.mobile-dock a[href="${href}"]` : `.nav a[href="${href}"]`);
     setCursorType('arrow');
     if (navPos) setCursorPx(navPos);
     await wait(1300); // cursor transition 1.15s + small settle
@@ -917,7 +918,8 @@ function TryItOut() {
     await wait(420);
 
     // ── Step 3: click — ripple + flash the nav link ──
-    const navEl = document.querySelector(`a[href="${href}"]`) as HTMLElement | null;
+    const selector = isMobile ? `.mobile-dock a[href="${href}"]` : `.nav a[href="${href}"]`;
+    const navEl = document.querySelector(selector) as HTMLElement | null;
     if (navPos) {
       fireRipple(navPos.x, navPos.y);
       if (navEl) {
@@ -1030,15 +1032,18 @@ function TryItOut() {
     if (abortRef.current) { endDemo(); return; }
 
     // Cursor sweeps up to nav area — page is already at top so both align
-    setCursorPx({ x: W * 0.5, y: 80 });
+    const isMobile = W <= 768;
+    setCursorPx({ x: W * 0.5, y: isMobile ? H - 40 : 80 });
     setActionLog(p => [...p, '🔍 Parsing navigation structure...']);
     await wait(1300);
 
     // Walk through every nav section
     await visitSection('#features',    'features',    'Features');
     await visitSection('#demo',        'demo',        'Demo');
-    await visitSection('#how-it-works','how-it-works','How It Works');
-    await visitSection('#open-source', 'open-source', 'Open Source');
+    if (!isMobile) {
+      await visitSection('#how-it-works','how-it-works','How It Works');
+      await visitSection('#open-source', 'open-source', 'Open Source');
+    }
     if (abortRef.current) { endDemo(); return; }
 
     // Return home — scroll to try-it-out, cursor follows to center
@@ -1124,6 +1129,7 @@ function TryItOut() {
 
       {/* ── Card ── */}
       <motion.div
+        className="try-it-now-card-wrapper"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -1162,9 +1168,9 @@ function TryItOut() {
           </div>
 
           {/* Content */}
-          <div style={{ padding: '36px 32px' }}>
+          <div className="try-it-now-content" style={{ padding: '36px 32px' }}>
             {/* Input + Run */}
-            <div style={{
+            <div className="try-it-now-input-wrapper" style={{
               background: '#160d0a',
               border: '1px solid rgba(249, 115, 22, 0.25)',
               borderRadius: '999px',
@@ -1188,7 +1194,10 @@ function TryItOut() {
                   width: '100%',
                   outline: 'none',
                   boxShadow: 'none',
-                  padding: 0
+                  padding: 0,
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap'
                 }}
               />
               <button
@@ -1373,9 +1382,9 @@ function CoreFeatures() {
         </h2>
       </div>
 
-      <div style={{
+      <div className="core-features-grid" style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
         gap: '24px'
       }}>
         {CORE_ITEMS.map((item, idx) => (
