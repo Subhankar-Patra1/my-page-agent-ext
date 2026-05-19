@@ -4,7 +4,7 @@ import Lenis from "lenis";
 // Added useScroll and useTransform for the stacking scroll effect
 import { motion, AnimatePresence, useMotionValue, useMotionTemplate, useScroll, useTransform } from "framer-motion";
 import {
-  Menu, X, Download, ArrowRight, Play, Check,
+  Menu, X, ArrowRight, Play, Check,
   AppWindow, Sparkles, Lock, Rocket, Cpu, Eye, Star,
   Package, Plug, Terminal, CheckCircle, RefreshCw,
   BarChart2, ChevronUp, ChevronDown,
@@ -15,11 +15,6 @@ import "./App.css";
 
 /* ─── Data ─── */
 const SITE = { name: "Oryonix AI", chrome: "#", github: "https://github.com/user/oryonix-ai" };
-
-const handleInstallClick = (e: React.MouseEvent) => {
-  e.preventDefault();
-  window.dispatchEvent(new CustomEvent('show-install-notice'));
-};
 
 const NAV = [
   { label: "Features", href: "#features" },
@@ -515,7 +510,7 @@ const fadeUp = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0 } };
 const stagger = { show: { transition: { staggerChildren: 0.1 } } };
 
 /* ═══════════ NAVBAR ═══════════ */
-function Navbar({ visible, activeSection, onNavClick }: { visible: boolean, activeSection: string, onNavClick: (e: any, href: string) => void }) {
+function Navbar({ visible, activeSection, onNavClick, onInstallClick }: { visible: boolean, activeSection: string, onNavClick: (e: any, href: string) => void, onInstallClick: () => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -558,7 +553,7 @@ function Navbar({ visible, activeSection, onNavClick }: { visible: boolean, acti
             </ul>
           </div>
 
-          <a href={SITE.chrome} onClick={handleInstallClick} className="btn btn--primary btn--sm nav__cta">Install Free</a>
+          <button onClick={onInstallClick} className="btn btn--primary btn--sm nav__cta" style={{ cursor: 'pointer' }}>Install Free</button>
           <button className="nav__burger" onClick={() => setOpen(!open)} aria-label="Toggle menu">
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -566,7 +561,7 @@ function Navbar({ visible, activeSection, onNavClick }: { visible: boolean, acti
             {open && (
               <motion.div className="nav__mobile" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 {NAV.map(n => <a key={n.href} href={n.href} className="nav__mobile-link" onClick={(e) => { onNavClick(e, n.href); setOpen(false); }}>{n.label}</a>)}
-                <a href={SITE.chrome} onClick={handleInstallClick} className="btn btn--primary">Install Free</a>
+                <a href="/early-access/index.html" className="btn btn--primary">Apply for Early Access</a>
               </motion.div>
             )}
           </AnimatePresence>
@@ -627,7 +622,7 @@ function Hero({ onNavClick }: { onNavClick?: (e: any, href: string) => void }) {
           <h1 className="hero__title">Your AI Co-pilot<br /><span className="accent-text">for the Browser</span></h1>
           <p className="hero__sub">Tell it what to do. Watch it work.<br className="hide-mobile" /> Open source & privacy-first.</p>
           <div className="hero__actions">
-            <a href={SITE.chrome} onClick={handleInstallClick} className="btn btn--primary btn--lg"><Download size={18} />Install Free</a>
+            <a href="/early-access/index.html" className="btn btn--primary btn--lg"><Sparkles size={18} />Apply for Early Access</a>
             <a href="#demo" className="btn btn--glass btn--lg" onClick={(e) => onNavClick?.(e, '#demo')}>Watch Demo<ArrowRight size={16} /></a>
           </div>
         </motion.div>
@@ -1530,7 +1525,7 @@ function OpenSource() {
           </div>
           <div className="os-card__actions">
             <a href={SITE.github} className="btn btn--glass btn--lg" target="_blank" rel="noopener noreferrer"><GithubIcon size={20} />Star on GitHub</a>
-            <a href={SITE.chrome} onClick={handleInstallClick} className="btn btn--primary btn--lg" target="_blank" rel="noopener noreferrer"><Download size={18} />Install Extension</a>
+            <a href="/early-access/index.html" className="btn btn--primary btn--lg"><Sparkles size={18} />Apply for Early Access</a>
           </div>
           <div className="os-card__stats">
             <div className="os-card__stat"><span className="os-card__stat-val">MIT</span><span className="os-card__stat-label">License</span></div>
@@ -1580,7 +1575,7 @@ function CTA() {
           <h2>Ready to put your browser on <span className="accent-text">autopilot?</span></h2>
           <p>Install in seconds. Start automating immediately. No account required.</p>
           <div className="cta-card__actions">
-            <a href={SITE.chrome} onClick={handleInstallClick} className="btn btn--primary btn--lg"><Download size={18} />Install Free — Chrome Web Store</a>
+            <a href="/early-access/index.html" className="btn btn--primary btn--lg"><Sparkles size={18} />Apply for Early Access</a>
             <a href={SITE.github} className="btn btn--glass btn--lg" target="_blank" rel="noopener noreferrer"><GithubIcon size={18} />Star on GitHub</a>
           </div>
         </motion.div>
@@ -1902,7 +1897,12 @@ export default function App() {
   return (
     <>
       <AmbientBackground />
-      <Navbar visible={visibleDock} activeSection={activeSection} onNavClick={handleNavClick} />
+      <Navbar 
+        visible={visibleDock} 
+        activeSection={activeSection} 
+        onNavClick={handleNavClick} 
+        onInstallClick={() => setShowInstallNotice(true)} 
+      />
       <main id="main-content">
         <Hero onNavClick={handleNavClick} />
         <TryItOut />
@@ -1954,9 +1954,9 @@ export default function App() {
                 <span>Github</span>
               </a>
               <div className="mobile-dock__div"></div>
-              <a href={SITE.chrome} onClick={handleInstallClick} className="mobile-dock__cta btn btn--primary btn--sm">
-                <Download size={16} />
-                <span>Install</span>
+              <a href="/early-access/index.html" className="mobile-dock__cta btn btn--primary btn--sm">
+                <Sparkles size={16} />
+                <span>Early Access</span>
               </a>
             </div>
           </motion.div>
@@ -2084,10 +2084,19 @@ export default function App() {
               
               <div style={{ display: 'flex', gap: '12px', width: '100%', marginTop: '12px', flexDirection: 'column' }}>
                 <a 
+                  href="/early-access/index.html" 
+                  className="btn btn--primary btn--lg" 
+                  style={{ width: '100%', justifyContent: 'center' }}
+                  onClick={() => setShowInstallNotice(false)}
+                >
+                  <Sparkles size={18} />
+                  <span style={{ marginLeft: '8px' }}>Apply for Early Access</span>
+                </a>
+                <a 
                   href={SITE.github} 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="btn btn--primary btn--lg" 
+                  className="btn btn--glass btn--lg" 
                   style={{ width: '100%', justifyContent: 'center' }}
                   onClick={() => setShowInstallNotice(false)}
                 >
@@ -2096,7 +2105,7 @@ export default function App() {
                 </a>
                 <button 
                   className="btn btn--glass btn--lg" 
-                  style={{ width: '100%', justifyContent: 'center', background: 'transparent' }}
+                  style={{ width: '100%', justifyContent: 'center', background: 'transparent', opacity: 0.7 }}
                   onClick={() => setShowInstallNotice(false)}
                 >
                   Close

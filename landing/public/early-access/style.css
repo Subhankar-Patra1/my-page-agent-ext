@@ -1,0 +1,620 @@
+:root {
+    --bg-base: #080503;
+    --glass-bg: rgba(255, 255, 255, 0.02);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    
+    --color-accent: #f97316;
+    --color-accent-hover: #ea580c;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: rgba(255, 255, 255, 0.7);
+    --color-text-tertiary: rgba(255, 255, 255, 0.4);
+    --color-error: #ef4444;
+
+    --radius-lg: 16px;
+    --radius-md: 8px;
+    --radius-sm: 4px;
+
+    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Ambient Background Glow */
+.background-ambient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #0a0a0a;
+    background-image: 
+        radial-gradient(circle at 20% 0%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(249, 115, 22, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 30% 100%, rgba(249, 115, 22, 0.12) 0%, transparent 50%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.container {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+/* Glass Panels */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: var(--glass-shadow);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-header {
+    border-top: 8px solid var(--color-accent);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.logo img {
+    height: 36px;
+    width: auto;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.form-header h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    letter-spacing: -0.03em;
+}
+
+.form-header p {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.required-note {
+    color: var(--color-error) !important;
+    font-size: 0.85rem !important;
+    margin-top: 16px;
+}
+
+.req {
+    color: var(--color-error);
+    margin-left: 4px;
+}
+
+.optional {
+    color: var(--color-text-tertiary);
+    font-size: 0.85rem;
+    font-weight: 400;
+    margin-left: 8px;
+}
+
+/* Form Groups */
+.form-group label {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text-primary);
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Custom Radios & Checkboxes */
+.radio-group, .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.radio-label, .checkbox-label {
+    display: flex;
+    align-items: center;  /* This ensures vertical centering */
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    font-weight: 400;
+    line-height: 1.5;  /* Changed from 1.4 to 1.5 for better alignment */
+    margin: 0;
+    transition: color 0.2s ease;
+    gap: 12px;  /* Add consistent spacing */
+}
+
+.radio-label:hover, .checkbox-label:hover {
+    color: var(--color-text-primary);
+}
+
+.radio-label input, .checkbox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.radio-custom, .checkbox-custom {
+    position: relative;
+    display: inline-flex;  /* Changed to inline-flex for better alignment */
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-right: 0;  /* Remove this since we're using gap */
+    flex-shrink: 0;  /* Prevent shrinking */
+    transition: all 0.2s ease;
+    vertical-align: middle;  /* Add this */
+    transform: translateY(-2px); /* Visually align text down */
+}
+
+.radio-custom {
+    border-radius: 50%;
+}
+
+.checkbox-custom {
+    border-radius: 4px;
+}
+
+/* If you have text spans, ensure they align properly */
+.radio-label > span:not(.radio-custom):not(.other-text),
+.checkbox-label > span:not(.checkbox-custom):not(.other-text) {
+    line-height: 1.5;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.radio-label:hover input ~ .radio-custom,
+.checkbox-label:hover input ~ .checkbox-custom {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.radio-label input:checked ~ .radio-custom,
+.checkbox-label input:checked ~ .checkbox-custom {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.radio-custom:after, .checkbox-custom:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.radio-label input:checked ~ .radio-custom:after,
+.checkbox-label input:checked ~ .checkbox-custom:after {
+    display: block;
+}
+
+/* Radio Dot */
+.radio-label .radio-custom:after {
+    top: 5px;
+    left: 5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
+/* Checkbox Tick */
+.checkbox-label .checkbox-custom:after {
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Inline "Other" Input */
+.other-text {
+    margin-right: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;  /* ✅ Prevent text from shrinking */
+}
+
+.other-input {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 0 !important;
+    padding: 2px 8px !important;
+    color: var(--color-text-primary) !important;
+    width: auto !important;  /* ✅ Changed to auto */
+    min-width: 150px;        /* ✅ Added minimum width */
+    flex: 1;                 /* ✅ Allow it to grow */
+    font-size: 0.95rem !important;
+    transition: border-color 0.2s ease !important;
+    box-shadow: none !important;
+}
+
+.other-input:focus {
+    border-bottom-color: var(--color-accent) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Active field highlighting */
+.form-group.active {
+    border-color: rgba(249, 115, 22, 0.3);
+    box-shadow: 0 8px 32px rgba(249, 115, 22, 0.05);
+}
+
+/* Actions */
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 40px;
+    margin-bottom: 80px;
+}
+
+.btn {
+    padding: 14px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background-color: var(--color-accent);
+    color: white;
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.4);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-accent-hover);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+.btn-secondary:hover {
+    color: var(--color-text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Form success state */
+.success-message {
+    display: none;
+    text-align: center;
+    padding: 60px 40px;
+}
+
+.success-message h3 {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    color: var(--color-accent);
+}
+
+.success-message p {
+    color: var(--color-text-secondary);
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 30px 16px;
+    }
+    
+    .glass-panel {
+        padding: 24px;
+        margin-bottom: 16px;
+    }
+    
+    .form-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column-reverse;
+        gap: 16px;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+
+/* Autofill Overrides */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #141414 inset !important;
+    -webkit-text-fill-color: var(--color-text-primary) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Dynamic Onboarding Layout & Sticky Progress Tracker */
+.sticky-tracker {
+    position: sticky;
+    top: 16px;
+    z-index: 100;
+    margin-bottom: 30px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+    background: rgba(18, 14, 12, 0.7) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progress-text {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+.progress-container {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: var(--glass-border);
+}
+
+.progress-bar-wrapper {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-accent) 0%, #ff8a3d 100%);
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
+}
+
+.step-indicators {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.clickable-indicators button.step-indicator {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.clickable-indicators button.step-indicator:hover {
+    color: var(--color-text-primary);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.clickable-indicators button.step-indicator.active {
+    color: var(--color-accent);
+    font-weight: 600;
+    background: rgba(249, 115, 22, 0.08);
+    text-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+}
+
+/* Sections */
+.form-section {
+    margin-bottom: 48px;
+    scroll-margin-top: 160px; /* ensures scroll alignment sits cleanly below the sticky tracker */
+}
+
+.section-title {
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+    margin-bottom: 24px;
+    font-weight: 600;
+    border-left: 3px solid var(--color-accent);
+    padding-left: 12px;
+}
+
+/* Validation Visual Error Highlights */
+.form-group.error {
+    border-color: rgba(239, 68, 68, 0.35) !important;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.08) !important;
+}
+
+.form-group.error label {
+    color: #ef4444 !important;
+}
+
+/* Adjust mobile layout for progress elements */
+@media (max-width: 600px) {
+    .sticky-tracker {
+        top: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .progress-container {
+        padding: 12px 16px;
+        gap: 8px;
+    }
+    
+    .progress-text {
+        font-size: 0.75rem;
+    }
+    
+    .step-indicators {
+        justify-content: center;
+        gap: 16px;
+    }
+    
+    .step-text {
+        display: none;
+    }
+    
+    .clickable-indicators button.step-indicator {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50% !important;
+        padding: 0;
+        font-size: 0.75rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        color: var(--color-text-secondary);
+    }
+    
+    .clickable-indicators button.step-indicator.active {
+        background: rgba(249, 115, 22, 0.15) !important;
+        border-color: var(--color-accent) !important;
+        color: var(--color-accent) !important;
+        box-shadow: 0 0 8px rgba(249, 115, 22, 0.25);
+    }
+}
+
+/* Custom Confirmation Modal */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    max-width: 400px;
+    width: 90%;
+    padding: 32px;
+    background: rgba(18, 14, 12, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-backdrop.show .modal-content {
+    transform: translateY(0);
+}
+
+.modal-title {
+    font-size: 1.3rem;
+    color: var(--color-text-primary);
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.modal-message {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.modal-actions .btn {
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    min-width: 110px;
+}
