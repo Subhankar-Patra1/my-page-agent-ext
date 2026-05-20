@@ -2,7 +2,9 @@
   <img src="public/logo.svg" alt="Oryonix AI Logo" width="80" />
 </p>
 
-<h1 align="center">Oryonix AI</h1>
+<p align="center">
+  <img src="public/heading.svg" alt="Oryonix AI" width="320" />
+</p>
 
 <p align="center">
   <strong>Your Autonomous Browser Copilot — Open Source & Privacy-First</strong>
