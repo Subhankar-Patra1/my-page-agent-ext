@@ -14,7 +14,7 @@ import {
 import "./App.css";
 
 /* ─── Data ─── */
-const SITE = { name: "Oryonix AI", chrome: "#", github: "https://github.com/user/oryonix-ai" };
+const SITE = { name: "Oryonix AI", chrome: "#", github: "https://github.com/Subhankar-Patra1/Oryonix-ai" };
 
 const NAV = [
   { label: "Features", href: "#features" },
@@ -1184,9 +1184,8 @@ function TryItOut() {
               <input
                 type="text"
                 value={promptText}
-                onChange={(e) => setPromptText(e.target.value)}
+                readOnly
                 placeholder="Enter a task for the agent..."
-                disabled={isRunning}
                 style={{
                   background: 'transparent',
                   border: 'none',
@@ -1198,7 +1197,9 @@ function TryItOut() {
                   padding: 0,
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
-                  whiteSpace: 'nowrap'
+                  whiteSpace: 'nowrap',
+                  cursor: 'default',
+                  pointerEvents: 'none'
                 }}
               />
               <button
@@ -2079,7 +2080,7 @@ export default function App() {
               <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem', lineHeight: '1.6', margin: 0 }}>
                 Oryonix AI is currently under review by the Chrome Web Store. Once approved, automatic 1-click installation will be available here.
                 <br/><br/>
-                For now, you can download the unpacked extension and install it manually from our GitHub repository.
+                For now, you can download the unpacked extension and install it manually from our <a href={SITE.github} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent-primary)', textDecoration: 'underline' }}>GitHub repository</a>.
               </p>
               
               <div style={{ display: 'flex', gap: '12px', width: '100%', marginTop: '12px', flexDirection: 'column' }}>
