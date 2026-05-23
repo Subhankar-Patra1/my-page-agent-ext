@@ -1625,7 +1625,7 @@ button:focus {
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 999px;
     height: 52px;
-    padding: 0 0 0 8px;
+    padding: 0 6px 0 8px;
     z-index: 2000;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
     overflow: hidden;
@@ -1689,12 +1689,12 @@ button:focus {
   }
 
   .mobile-dock__cta {
-    height: 100%;
-    padding: 0 14px !important;
+    height: 36px;
+    padding: 0 12px !important;
     font-size: 0.68rem !important;
     font-weight: 600 !important;
     gap: 4px !important;
-    border-radius: 0 !important;
+    border-radius: 999px !important;
     flex-shrink: 0;
     transform: none !important;
     white-space: nowrap;
@@ -1891,7 +1891,7 @@ button:focus {
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 999px;
     height: 56px;
-    padding: 0 0 0 12px;
+    padding: 0 8px 0 12px;
     z-index: 2000;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
     overflow: hidden;
@@ -1955,12 +1955,12 @@ button:focus {
   }
 
   .mobile-dock__cta {
-    height: 100%;
-    padding: 0 18px !important;
+    height: 40px;
+    padding: 0 14px !important;
     font-size: 0.72rem !important;
     font-weight: 600 !important;
     gap: 6px !important;
-    border-radius: 0 !important;
+    border-radius: 999px !important;
     flex-shrink: 0;
     transform: none !important;
     box-sizing: border-box;
