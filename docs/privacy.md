@@ -19,9 +19,9 @@ To provide autonomous multi-tab browser automation, the extension requires speci
 * **`storage`:** Persists your settings, session history, configured LLM endpoints, and API credentials securely inside `chrome.storage.local`.
 * **`tabs` & `tabGroups`:** Allows the agent to open new tabs, switch active tabs, group tabs, and navigate URLs to fulfill tasks.
 * **`activeTab`:** Allows the agent to perceive the current web structure, click elements, and enter text *only* on the page you trigger it on.
-* **`scripting`:** Executes safe client-side actions (like simulating mouse clicks, scrolls, or keystrokes) directly on the tab DOM.
 * **`sidePanel`:** Displays the extension panel interface where you type commands, read active execution logs, and manage history.
 * **`alarms`:** Coordinates minor heartbeat events and periodic task checking.
+* **`audioCapture`:** Enables microphone access via the Web Speech API for voice command input directly within the extension panel.
 
 ---
 
