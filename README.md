@@ -382,11 +382,11 @@ The extension requests these Chrome permissions:
 |-----------|----------------|
 | `tabs` | Open, close, switch, and query browser tabs |
 | `activeTab` | Interact with the currently active tab |
-| `scripting` | Inject content scripts for DOM interaction |
 | `sidePanel` | Display the agent UI in Chrome's side panel |
 | `storage` | Save LLM config, agent state, and preferences locally |
 | `tabGroups` | Organize agent-managed tabs into color-coded groups |
 | `alarms` | Keep-alive mechanism to prevent service worker death during long tasks |
+| `audioCapture` | Enables microphone access via the Web Speech API for voice command input directly within the extension panel |
 | `<all_urls>` | Content script needs access to any website the user navigates to |
 
 ---
