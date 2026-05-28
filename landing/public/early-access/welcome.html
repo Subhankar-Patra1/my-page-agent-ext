@@ -758,7 +758,7 @@
                                                             <img src="../logo.svg" alt="Oryonix Logo">
                                                         </div>
                                                         <div class="ext-meta-info">
-                                                            <h4 class="ext-title">Oryonix AI Copilot <span
+                                                            <h4 class="ext-title">Oryonix AI<span
                                                                     class="ext-ver">1.0.1</span></h4>
                                                             <p class="ext-desc">Autonomous AI browser copilot for
                                                                 private web exploration and task execution.</p>
@@ -770,7 +770,7 @@
                                                         <div class="ext-inspected-views">
                                                             <span>Inspect views:</span>
                                                             <a href="javascript:void(0)"
-                                                                onclick="showToast('🔍 Inspecting background service worker...');">service
+                                                                onclick="showToast('Inspecting background service worker...', 'info');">service
                                                                 worker</a>
                                                         </div>
                                                     </div>
@@ -1081,10 +1081,7 @@
 
         <!-- Toast Notification -->
         <div id="toast" class="toast-notification">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#27c93f" stroke-width="3"
-                stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
+            <div id="toastIcon" style="display: flex; align-items: center; justify-content: center; flex-shrink: 0;"></div>
             <span id="toastMessage">Command copied to clipboard!</span>
         </div>
 
@@ -1359,30 +1356,98 @@
 
             // 2. Clipboard Copy Terminal Command
             function copyTerminalCommand(event) {
+                const btn = event.currentTarget;
                 const code = document.getElementById('terminalCode').textContent;
-                navigator.clipboard.writeText(code).then(() => {
-                    const btn = event.currentTarget;
+                
+                function fallbackCopy() {
+                    try {
+                        const textArea = document.createElement("textarea");
+                        textArea.value = code;
+                        // Avoid scrolling to bottom
+                        textArea.style.top = "0";
+                        textArea.style.left = "0";
+                        textArea.style.position = "fixed";
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        const successful = document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        if (successful) {
+                            successActions();
+                        } else {
+                            showToast('Failed to copy command. Please select and copy manually.', 'error');
+                        }
+                    } catch (err) {
+                        showToast('Failed to copy command. Please select and copy manually.', 'error');
+                    }
+                }
+
+                function successActions() {
                     btn.classList.add('copied');
                     btn.querySelector('span').textContent = 'Copied!';
 
-                    showToast('Terminal setup command copied to clipboard!');
+                    showToast('Terminal setup command copied to clipboard!', 'success');
 
                     setTimeout(() => {
                         btn.classList.remove('copied');
                         btn.querySelector('span').textContent = 'Copy Command';
                     }, 2000);
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
-                    showToast('❌ Failed to copy command. Please select and copy manually.');
-                });
+                }
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(code).then(successActions).catch(err => {
+                        fallbackCopy();
+                    });
+                } else {
+                    fallbackCopy();
+                }
             }
 
-            // 3. Custom Toast Alert System
-            function showToast(message) {
+            // 3. Custom Dynamic Toast Alert System
+            function showToast(message, type = 'success') {
                 const toast = document.getElementById('toast');
-                document.getElementById('toastMessage').textContent = message;
+                const toastIcon = document.getElementById('toastIcon');
+                const toastMessage = document.getElementById('toastMessage');
+                
+                // Dynamic SVGs based on message type
+                const icons = {
+                    success: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#27c93f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+                    error: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
+                    warning: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`,
+                    info: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`
+                };
+
+                // Remove prefix emojis if they exist in the message (since we have clean SVGs now)
+                let cleanMessage = message;
+                const emojiPrefixes = ['❌ ', '🛠️ ', 'Deactivated. ', '⚠️ ', '📂 ', '🚀 ', '🔍 '];
+                for (const prefix of emojiPrefixes) {
+                    if (cleanMessage.startsWith(prefix)) {
+                        cleanMessage = cleanMessage.substring(prefix.length);
+                        break;
+                    }
+                }
+                
+                // Also clean up manual starts
+                if (cleanMessage.startsWith('🛠️')) cleanMessage = cleanMessage.substring(2).trim();
+                if (cleanMessage.startsWith('⚠️')) cleanMessage = cleanMessage.substring(2).trim();
+                if (cleanMessage.startsWith('🚀')) cleanMessage = cleanMessage.substring(2).trim();
+                if (cleanMessage.startsWith('📂')) cleanMessage = cleanMessage.substring(2).trim();
+
+                if (toastIcon) {
+                    toastIcon.innerHTML = icons[type] || icons.success;
+                }
+                if (toastMessage) {
+                    toastMessage.textContent = cleanMessage;
+                }
+                
                 toast.classList.add('show');
-                setTimeout(() => {
+                
+                // Clear any existing timeout to avoid overlaps on rapid clicks
+                if (toast.timeoutId) {
+                    clearTimeout(toast.timeoutId);
+                }
+                
+                toast.timeoutId = setTimeout(() => {
                     toast.classList.remove('show');
                 }, 3000);
             }
@@ -1411,7 +1476,7 @@
                         stateLoaded.style.display = 'none';
                     }
 
-                    showToast('🛠️ Developer Mode activated!');
+                    showToast('Developer Mode activated!', 'success');
                 } else {
                     // Dev mode turned OFF
                     subBar.classList.remove('show');
@@ -1419,7 +1484,7 @@
                     stateDevEmpty.style.display = 'none';
                     stateLoaded.style.display = 'none';
 
-                    showToast('Developer Mode deactivated.');
+                    showToast('Developer Mode deactivated.', 'info');
                 }
             }
 
@@ -1429,17 +1494,17 @@
                 const stateLoaded = document.getElementById('mockStateLoaded');
 
                 if (!toggle.classList.contains('active')) {
-                    showToast('⚠️ Please enable Developer Mode switch in the top-right first!');
+                    showToast('Please enable Developer Mode switch in the top-right first!', 'warning');
                     return;
                 }
 
-                showToast('📂 Selecting folder: /Documents/Oryonix AI ...');
+                showToast('Selecting folder: /Documents/Oryonix AI ...', 'info');
 
                 setTimeout(() => {
                     stateDevEmpty.style.display = 'none';
                     stateLoaded.style.display = 'block';
                     stateLoaded.classList.add('show-active');
-                    showToast('🚀 Oryonix AI loaded successfully!');
+                    showToast('Oryonix AI loaded successfully!', 'success');
                 }, 800);
             }
         </script>
