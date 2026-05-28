@@ -5,12 +5,12 @@
 # Change DOWNLOAD_URL to the actual URL where your zip file is hosted.
 # NOTE: Ensure the zip contains the extension files directly, not inside a subfolder.
 # ==============================================================================
-DOWNLOAD_URL="https://oryonix-ai-downloads.s3.amazonaws.com/oryonix-ai-1.0.0-chrome.zip"
-INSTALL_DIR="$HOME/Oryonix-AI"
-ZIP_FILE="/tmp/oryonix-ai-1.0.0-chrome.zip"
+DOWNLOAD_URL="https://oryonix-ai-downloads.s3.us-east-1.amazonaws.com/oryonix-ai-1.0.1-chrome.zip"
+INSTALL_DIR="$HOME/Oryonix AI"
+ZIP_FILE="/tmp/oryonix-ai-1.0.1-chrome.zip"
 
 echo "=========================================="
-echo "  Oryonix AI Beta Extension Installer"
+echo "  Oryonix AI Beta Extension Installer (macOS)"
 echo "=========================================="
 echo ""
 
@@ -71,6 +71,12 @@ echo ""
 echo "    Edge:   open -a \"Microsoft Edge\" --args --load-extension=\"$INSTALL_DIR\" \"https://google.com\""
 echo "    Brave:  open -a \"Brave Browser\" --args --load-extension=\"$INSTALL_DIR\" \"https://google.com\""
 echo "    Chrome: open -a \"Google Chrome\" --args --load-extension=\"$INSTALL_DIR\" \"https://google.com\""
+echo ""
+echo "    Or, load it manually through the browser interface:"
+echo "    1. Type chrome://extensions in your URL bar (or edge://extensions / brave://extensions)."
+echo "    2. Toggle \"Developer mode\" in the top right to ON."
+echo "    3. Click the \"Load unpacked\" button in the top left."
+echo "    4. Select the installation folder: $INSTALL_DIR"
 echo "======================================================================"
 echo ""
 echo "[!] You can now safely close this window."
