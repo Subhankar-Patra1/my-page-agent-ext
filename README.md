@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <a href="https://oryonix.vercel.app">🌐 Website</a> •
+  <a href="https://oryonix-ai.vercel.app">🌐 Website</a> •
   <a href="#-quick-start">🚀 Quick Start</a> •
   <a href="#-features">✨ Features</a> •
   <a href="#%EF%B8%8F-architecture">🏗️ Architecture</a> •
