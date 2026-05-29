@@ -620,8 +620,10 @@
             <div class="tabs-header">
                 <button type="button" class="tab-btn active" onclick="switchTab(event, 'direct-download')">🚀 Direct
                     Download (Recommended)</button>
+                <!-- HIDDEN: Automated Script Install tab - CLI-loaded extensions are temporary, disabled for now
                 <button type="button" class="tab-btn" onclick="switchTab(event, 'automated-script')">⚡ Automated Script
                     Install</button>
+                -->
                 <button type="button" class="tab-btn" onclick="switchTab(event, 'web-store')"><svg fill="currentColor"
                         role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
                         style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle; transform: translateY(-1px);">
@@ -909,13 +911,12 @@
                 </div>
             </div>
 
-            <!-- TAB 2: AUTOMATED SCRIPT INSTALL -->
+            <!-- HIDDEN: Automated Script Install tab - CLI-loaded extensions are temporary, disabled for now
             <div id="automated-script" class="tab-pane">
                 <p style="text-align: left; margin-bottom: 24px; color: var(--color-text-secondary); line-height: 1.5;">
                     Please choose <strong>either</strong> Option A (One-Click Command) <strong>or</strong> Option B (Manual ZIP Download) to install the extension automatically. <strong>You do not need to do both.</strong>
                 </p>
 
-                <!-- Option A: One-Click Terminal Install -->
                 <div class="install-option-card">
                     <div class="install-option-badge">Option A</div>
                     <div class="install-option-header">
@@ -923,7 +924,6 @@
                         <p>The fastest setup. Copy and run the command in your terminal to automatically install the extension and launch your browser.</p>
                     </div>
 
-                    <!-- One-Click Terminal Install Command -->
                     <div class="terminal-card" style="margin-top: 20px; margin-bottom: 0;">
                         <div class="terminal-header">
                             <div class="terminal-dots">
@@ -954,12 +954,10 @@
                     </p>
                 </div>
 
-                <!-- OR Divider -->
                 <div class="install-divider">
                     <span>OR</span>
                 </div>
 
-                <!-- Option B: ZIP Bundle Installer -->
                 <div class="install-option-card">
                     <div class="install-option-badge" style="background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.15); color: var(--color-text-secondary);">Option B</div>
                     <div class="install-option-header">
@@ -992,14 +990,10 @@
                             <div class="step-content">
                                 <h4>Run the Installer Script</h4>
                                 <p>Open the extracted folder and run the appropriate script for your system:</p>
-                                <ul
-                                    style="color: var(--color-text-secondary); margin-left: 20px; margin-top: 8px; font-size: 0.9rem; line-height: 1.6;">
-                                    <li><strong>Windows:</strong> Double-click <code
-                                            style="color: #ff9d5c;">install_extension_windows.bat</code></li>
-                                    <li><strong>macOS:</strong> Double-click <code
-                                            style="color: #ff9d5c;">install_extension_mac.command</code></li>
-                                    <li><strong>Linux:</strong> Run <code
-                                            style="color: #ff9d5c;">bash install_extension_linux.sh</code> in terminal</li>
+                                <ul style="color: var(--color-text-secondary); margin-left: 20px; margin-top: 8px; font-size: 0.9rem; line-height: 1.6;">
+                                    <li><strong>Windows:</strong> Double-click <code style="color: #ff9d5c;">install_extension_windows.bat</code></li>
+                                    <li><strong>macOS:</strong> Double-click <code style="color: #ff9d5c;">install_extension_mac.command</code></li>
+                                    <li><strong>Linux:</strong> Run <code style="color: #ff9d5c;">bash install_extension_linux.sh</code> in terminal</li>
                                 </ul>
                             </div>
                         </div>
@@ -1008,11 +1002,7 @@
                             <div class="step-number">3</div>
                             <div class="step-content">
                                 <h4>Watch it Work!</h4>
-                                <p>The script will automatically fetch the official extension package, set it up, and launch
-                                    your browser with the Oryonix AI extension preloaded. Look for the <img
-                                        src="../logo.svg" alt="Oryonix AI"
-                                        style="width: 22px; height: 22px; vertical-align: middle; display: inline-block; margin: 0 4px; transform: translateY(-1.5px); filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));">
-                                    Oryonix AI logo in your toolbar!</p>
+                                <p>The script will automatically fetch the official extension package, set it up, and launch your browser with the Oryonix AI extension preloaded.</p>
                             </div>
                         </div>
 
@@ -1020,23 +1010,14 @@
                             <div class="step-number">4</div>
                             <div class="step-content">
                                 <h4>Pin for Easy Access 📌</h4>
-                                <p>Browsers hide newly loaded extensions by default. Click the
-                                    <strong>Extensions</strong><svg viewBox="0 0 18.035334 17.500378"
-                                        style="width: 22px; height: 22px; fill: #ff9d5c; vertical-align: middle; display: inline-block; margin: 0 0 0 4px; transform: translateY(-2px);">
-                                        <g transform="translate(-0.99262638,-1.174181)">
-                                            <path style="fill:#ff9d5c;fill-opacity:1;stroke-width:0.46185368"
-                                                d="m 14.269566,9.6934441 -0.692781,0 0,-1.847416 c 0,-0.5080383 -0.415668,-0.9237063 -0.923706,-0.9237063 l -1.847416,0 0,-0.69278 c 0,-0.637359 -0.517275,-1.154636 -1.1546334,-1.154636 -0.6373578,0 -1.1546338,0.517277 -1.1546338,1.154636 l 0,0.69278 -1.847416,0 c -0.508038,0 -0.919089,0.415668 -0.919089,0.9237063 l 0,1.755045 0.688164,0 c 0.688161,0 1.247005,0.5588429 1.247005,1.2470049 0,0.688162 -0.558844,1.247005 -1.247005,1.247005 l -0.692781,0 0,1.755045 c 0,0.508038 0.415668,0.923706 0.923706,0.923706 l 1.755045,0 0,-0.692781 c 0,-0.688161 0.558843,-1.247005 1.2470048,-1.247005 0.6881624,0 1.2470044,0.558844 1.2470044,1.247005 l 0,0.692781 1.755045,0 c 0.508038,0 0.923706,-0.415668 0.923706,-0.923706 l 0,-1.847416 0.692781,0 c 0.637358,0 1.154635,-0.517276 1.154635,-1.154634 0,-0.637358 -0.517277,-1.1546339 -1.154635,-1.1546339 z"
-                                                id="path7415" />
-                                        </g>
-                                    </svg> in your browser toolbar, find <img src="../logo.svg" alt="Oryonix AI"
-                                        style="width: 22px; height: 22px; vertical-align: middle; display: inline-block; margin: 0 4px; transform: translateY(-1.5px); filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));">
-                                    <strong>Oryonix AI</strong>, and click the <strong>Pin</strong> (pin-shaped) icon to
-                                    keep your copilot always visible.</p>
+                                <p>Click the Extensions icon in your browser toolbar, find Oryonix AI, and click the Pin icon to keep your copilot always visible.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            END HIDDEN: Automated Script Install tab -->
+
 
             <!-- TAB 3: CHROME WEB STORE -->
             <div id="web-store" class="tab-pane">
@@ -1439,6 +1420,7 @@
                 }
             }
 
+            /* HIDDEN: Terminal OS Switcher and Copy Command JS - disabled with the Automated Script tab
             // Terminal OS Switcher Logic
             let currentTerminalOS = 'mac';
             const terminalCommands = {
@@ -1448,8 +1430,6 @@
 
             function switchTerminalOS(os) {
                 currentTerminalOS = os;
-                
-                // Update active button styling
                 const buttons = document.querySelectorAll('.terminal-os-btn');
                 buttons.forEach(btn => {
                     if (btn.getAttribute('data-os') === os) {
@@ -1458,15 +1438,12 @@
                         btn.classList.remove('active');
                     }
                 });
-
-                // Update command text
                 const codeEl = document.getElementById('terminalCode');
                 if (codeEl) {
                     codeEl.textContent = terminalCommands[os];
                 }
             }
 
-            // 2. Clipboard Copy Terminal Command
             function copyTerminalCommand(event) {
                 const btn = event.currentTarget;
                 const code = document.getElementById('terminalCode').textContent;
@@ -1475,7 +1452,6 @@
                     try {
                         const textArea = document.createElement("textarea");
                         textArea.value = code;
-                        // Avoid scrolling to bottom
                         textArea.style.top = "0";
                         textArea.style.left = "0";
                         textArea.style.position = "fixed";
@@ -1497,9 +1473,7 @@
                 function successActions() {
                     btn.classList.add('copied');
                     btn.querySelector('span').textContent = 'Copied!';
-
                     showToast('Terminal setup command copied to clipboard!', 'success');
-
                     setTimeout(() => {
                         btn.classList.remove('copied');
                         btn.querySelector('span').textContent = 'Copy Command';
@@ -1514,6 +1488,8 @@
                     fallbackCopy();
                 }
             }
+            END HIDDEN */
+
 
             // 3. Custom Dynamic Toast Alert System
             function showToast(message, type = 'success') {
