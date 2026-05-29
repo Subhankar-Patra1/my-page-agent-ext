@@ -199,14 +199,14 @@ npm run zip
 
 The production build goes to `.output/chrome-mv3/`.
 
-### Option 3: One-Click Installer Scripts
+### Option 3: Direct Download (For Non-Developers)
 
-For non-developers, pre-built installer scripts are included:
+If you're not a developer, you can download the pre-built extension directly:
 
-- **Windows**: Double-click `install_extension_windows.bat`
-- **macOS**: Double-click `install_extension_mac.command`
-
-These scripts download the latest pre-built extension, extract it, detect your default Chromium browser, and launch it with the extension auto-loaded.
+1. Visit our [Early Access Welcome Page](https://oryonix.vercel.app/early-access/welcome.html)
+2. Download the `.zip` extension bundle
+3. Extract it to a permanent folder (e.g., `Documents/Oryonix AI`)
+4. Open `chrome://extensions` → Enable **Developer Mode** → Click **Load unpacked** → Select the extracted folder
 
 ### Firefox Support
 
@@ -326,9 +326,7 @@ Oryonix-ai/
 │
 ├── wxt.config.ts                   # WXT framework configuration
 ├── package.json                    # Dependencies & scripts
-├── tsconfig.json                   # TypeScript configuration
-├── install_extension_windows.bat   # Windows one-click installer
-└── install_extension_mac.command   # macOS one-click installer
+└── tsconfig.json                   # TypeScript configuration
 ```
 
 ---
