@@ -49,3 +49,10 @@ TERMS_OF_USE.md
 
 # Early access slider page
 landing/public/early-access/index.html
+
+# Installer scripts (temporary extension loading - not used in production)
+install.ps1
+install.sh
+install_extension_windows.bat
+install_extension_mac.command
+install_extension_linux.sh
